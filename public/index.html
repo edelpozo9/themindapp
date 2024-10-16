@@ -1,34 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Mind Online</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Mind - Página de Inicio</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Welcome to The Mind Online</h1>
-  <input id="message" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
-  <ul id="messages"></ul>
+    <header>
+        <h1>Bienvenido a The Mind</h1>
+        <nav>
+            <ul>
+                <li><a href="#info">Información del Juego</a></li>
+                <li><a href="#reglas">Reglas del Juego</a></li>
+                <li><a href="#jugar">Comenzar a Jugar</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <!-- Importa la librería de Socket.IO desde el servidor -->
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
+    <main>
+        <section id="info">
+            <h2>¿Qué es The Mind?</h2>
+            <p>
+                The Mind es un juego de mesa cooperativo donde los jugadores deben jugar cartas en orden ascendente sin comunicarse entre sí. 
+                La comunicación no verbal y la intuición son clave para el éxito en este juego único y emocionante.
+            </p>
+        </section>
 
-    // Escucha mensajes de chat y los agrega a la lista
-    socket.on('chat message', (msg) => {
-      const item = document.createElement('li');
-      item.textContent = msg;
-      document.getElementById('messages').appendChild(item);
-    });
+        <section id="reglas">
+            <h2>Reglas del Juego</h2>
+            <ol>
+                <li>Cada jugador recibe un número determinado de cartas al inicio de cada nivel.</li>
+                <li>Los jugadores deben jugar sus cartas en el orden correcto, de menor a mayor.</li>
+                <li>No se permite la comunicación verbal; los jugadores deben confiar en su intuición.</li>
+                <li>Si un jugador juega una carta fuera de orden, se pierde una vida.</li>
+                <li>El juego avanza a niveles más difíciles a medida que se superan los niveles anteriores.</li>
+            </ol>
+        </section>
 
-    // Función para enviar un mensaje
-    function sendMessage() {
-      const message = document.getElementById('message').value;
-      socket.emit('chat message', message);
-      document.getElementById('message').value = '';
-    }
-  </script>
+        <section id="jugar">
+            <h2>¡Comienza a Jugar!</h2>
+            <p>
+                Haz clic en el botón de abajo para unirte a una partida o crear una nueva.
+            </p>
+            <button id="startGame">Unirme a una partida</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 The Mind. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
