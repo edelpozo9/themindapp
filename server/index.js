@@ -11,6 +11,9 @@ app.use(express.static("public"));
 
 const partidas = {}; // Objeto para guardar las partidas y jugadores
 
+// Definir cartas del 1 al 100
+const CARTAS = Array.from({ length: 100 }, (_, i) => i + 1); // Crea un array de [1, 2, ..., 100]
+
 // Evento que se ejecuta cuando un cliente se conecta
 io.on("connection", (socket) => {
   console.log("A user connected");
