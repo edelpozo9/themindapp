@@ -34,7 +34,17 @@
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
     <script>
         const socket = io(); // Conectar al servidor de Socket.IO
+ // Manejador para errores de conexión
+ socket.on("connect_error", (error) => {
+        console.error("Connection error:", error);
+        alert("Error de conexión con el servidor. Por favor, intenta nuevamente.");
+    });
 
+    // Manejador para desconexión
+    socket.on("disconnect", (reason) => {
+        console.warn("Disconnected from server:", reason);
+        alert("Se ha perdido la conexión con el servidor: " + reason);
+    });
         // Cargar el encabezado desde header.html
         fetch('header.html')
             .then(response => response.text())

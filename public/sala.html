@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sala de Partida</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
 </head>
 <body>
-    <h1 id="tituloSala"></h1>
+    <div class="container mt-4">
+        <h1 id="tituloSala"></h1>
+        <h2>Jugadores en la partida:</h2>
+        <ul id="listaJugadores" class="list-group"></ul> <!-- Lista para mostrar jugadores -->
+    </div>
+    
     <script>
         // Función para obtener parámetros de la URL
         function getQueryParams() {
@@ -26,6 +33,30 @@
 
         // Mostrar el nombre de la partida en la página
         document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida}`;
+
+        // Conectar al servidor de Socket.IO
+        const socket = io();
+
+        // Unirse a la partida
+        socket.emit('unirsePartida', nombrePartida);
+
+        // Actualizar la lista de jugadores cuando se recibe el evento
+        socket.on('actualizarJugadores', (jugadores) => {
+            const listaJugadores = document.getElementById('listaJugadores');
+            listaJugadores.innerHTML = ''; // Limpiar la lista antes de agregar
+            jugadores.forEach(jugador => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.textContent = jugador;
+                listaJugadores.appendChild(li);
+            });
+        });
+
+        // Manejar el evento de error al unirse a la partida
+        socket.on('errorPartida', (message) => {
+            alert(message); // Mostrar un mensaje de error
+            // Podrías redirigir al usuario o manejar la lógica aquí
+        });
     </script>
 </body>
 </html>

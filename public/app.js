@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Manejar el evento de error errorPartidaExistente
 socket.on('errorPartidaExistente', (message) => {
-    console.log('111'); // Esto debería aparecer si la partida ya existe
+    console.log('Ya existe una partida con ese nombre'); // Esto debería aparecer si la partida ya existe
     swal("Error", message, "error");
 });
 
