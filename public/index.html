@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Mind Online</title>
+</head>
+<body>
+  <h1>Welcome to The Mind Online</h1>
+  <input id="message" placeholder="Type a message..." />
+  <button onclick="sendMessage()">Send</button>
+  <ul id="messages"></ul>
+
+  <!-- Importa la librería de Socket.IO desde el servidor -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // Escucha mensajes de chat y los agrega a la lista
+    socket.on('chat message', (msg) => {
+      const item = document.createElement('li');
+      item.textContent = msg;
+      document.getElementById('messages').appendChild(item);
+    });
+
+    // Función para enviar un mensaje
+    function sendMessage() {
+      const message = document.getElementById('message').value;
+      socket.emit('chat message', message);
+      document.getElementById('message').value = '';
+    }
+  </script>
+</body>
+</html>

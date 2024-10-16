@@ -1,0 +1,23 @@
+{
+  "name": "themindapp",
+  "version": "1.0.0",
+  "description": "the mind juego online",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edelpozo9/themindapp.git"
+  },
+  "author": "edelpozo9",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edelpozo9/themindapp/issues"
+  },
+  "homepage": "https://github.com/edelpozo9/themindapp#readme",
+  "dependencies": {
+    "express": "^4.21.1",
+    "socket.io": "^4.8.0"
+  }
+}
