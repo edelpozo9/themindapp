@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Información del Juego - The Mind</title>
+    <meta
+      name="description"
+      content="Descubre qué es The Mind, un juego de mesa cooperativo que desafía a los jugadores a jugar cartas en orden ascendente sin comunicarse. Aprende las características y estrategias del juego."
+    />
+    <meta
+      name="keywords"
+      content="The Mind, juego de mesa, cooperativo, cartas, estrategias, características"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div id="header-container"></div>
+    <!-- Contenedor para el encabezado -->
+
+    <main class="container mt-4">
+      <section>
+        <h2>¿Qué es The Mind?</h2>
+        <p>
+          The Mind es un juego de mesa cooperativo donde los jugadores deben
+          jugar cartas en orden ascendente sin comunicarse entre sí. La
+          comunicación no verbal y la intuición son clave para el éxito en este
+          juego único y emocionante.
+        </p>
+      </section>
+
+      <section class="features mt-4">
+        <h2>Características del Juego</h2>
+        <ul>
+          <li>
+            <strong>Cooperativo:</strong> Los jugadores deben trabajar juntos
+            para ganar.
+          </li>
+          <li>
+            <strong>Intuición:</strong> No hay comunicación verbal; cada jugador
+            debe confiar en su instinto.
+          </li>
+          <li>
+            <strong>Niveles de Dificultad:</strong> El juego presenta niveles
+            progresivamente más difíciles.
+          </li>
+          <li>
+            <strong>Fácil de Aprender:</strong> Las reglas son simples, lo que
+            permite empezar a jugar rápidamente.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-4">
+        <h2>Estrategias para Ganar</h2>
+        <p>
+          Para tener éxito en The Mind, aquí hay algunas estrategias que puedes
+          seguir:
+        </p>
+        <ol>
+          <li>Observa atentamente las cartas que juegan los demás.</li>
+          <li>
+            Intenta jugar tus cartas en momentos en que creas que los demás
+            están listos.
+          </li>
+          <li>
+            Practica la paciencia; a veces, esperar es la mejor estrategia.
+          </li>
+          <li>
+            Comunicarse no verbalmente puede ser clave; observa las expresiones
+            de los demás jugadores.
+          </li>
+        </ol>
+      </section>
+
+      <section id="jugar" class="mb-4">
+        <div class="card text-center">
+          <div class="card-body">
+            <h2 class="card-title">¡Jugar!</h2>
+            <p class="card-text">
+              Haz clic en el botón de abajo para unirte a una partida o crear
+              una nueva.
+            </p>
+            <div class="text-center mt-4">
+              <!-- Contenedor para centrar el botón -->
+              <a href="jugar.html" class="btn btn-primary btn-lg" id="startGame"
+                >Empezar a Jugar</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="footer-container"></div>
+    <!-- Contenedor para el pie de página -->
+
+    <script>
+      // Cargar el encabezado desde header.html
+      fetch("header.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("header-container").innerHTML = data;
+        })
+        .catch((error) =>
+          console.error("Error al cargar el encabezado:", error)
+        );
+    </script>
+    <script>
+      // Cargar el pie de página desde footer.html
+      fetch("footer.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("footer-container").innerHTML = data;
+        })
+        .catch((error) =>
+          console.error("Error al cargar el pie de página:", error)
+        );
+    </script>
+  </body>
+</html>

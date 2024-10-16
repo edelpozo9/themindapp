@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Partida - The Mind</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div id="header-container"></div> <!-- Contenedor para el encabezado -->
+
+    <main class="container mt-4">
+        <h2 class="text-center">Crear Nueva Partida</h2>
+        <p class="text-center">Configura los detalles de la nueva partida a continuación:</p>
+
+        <div class="card mx-auto" style="max-width: 400px;"> <!-- Ajustar el ancho máximo -->
+            <div class="card-body">
+                <form id="crearPartidaForm">
+                    <div class="mb-3">
+                        <label for="nombrePartida" class="form-label">Nombre de la Partida:</label>
+                        <input type="text" class="form-control" id="nombrePartida" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="numJugadores" class="form-label">Número de Jugadores:</label>
+                        <select class="form-select" id="numJugadores" required>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success" id="startGame">Iniciar Partida</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div> <!-- Contenedor para el pie de página -->
+
+    <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
+    <script>
+        const socket = io(); // Conectar al servidor de Socket.IO
+
+        // Cargar el encabezado desde header.html
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error al cargar el encabezado:', error));
+
+        // Cargar el pie de página desde footer.html
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error al cargar el pie de página:', error));
+
+        // Lógica para iniciar la partida
+        document.getElementById('crearPartidaForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const nombrePartida = document.getElementById('nombrePartida').value;
+            const numJugadores = document.getElementById('numJugadores').value;
+
+            // Emitir el evento para crear la partida al servidor
+            socket.emit('crearPartida', nombrePartida, numJugadores);
+            
+        });
+
+        // Manejar el evento de respuesta de creación de partida
+        socket.on('partidaCreada', (data) => {
+            console.log('Datos de la partida creada:', data); // Agregar esta línea para depuración
+            
+            // Redirigir a la sala de la partida
+            window.location.href = `sala.html?nombre=${data.nombre}`; // Cambia esto a la URL de la sala con el nombre
+        });
+
+        // Manejar el evento de error
+        socket.on('error', (message) => {
+            alert(message); // Mostrar mensaje de error
+        });
+    </script>
+</body>
+
+</html>

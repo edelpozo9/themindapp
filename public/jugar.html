@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jugar a The Mind - Juego de Mesa Cooperativo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="header-container"></div> <!-- Contenedor para el encabezado -->
+
+    <main class="container mt-4 text-center">
+        <h2>¿Cómo quieres jugar?</h2>
+        
+        <section>
+            <p>¿Quieres crear una nueva partida o unirte a una existente?</p>
+            <div class="d-flex justify-content-center">
+                <a href="crear_partida.html" class="btn btn-primary btn-lg me-2" id="startGame">Crear una Partida</a>
+                <a href="unirse_partida.html" class="btn btn-secondary btn-lg">Unirse a una Partida</a>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div> <!-- Contenedor para el pie de página -->
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Cargar el encabezado desde header.html
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error al cargar el encabezado:', error));
+
+        // Cargar el pie de página desde footer.html
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error al cargar el pie de página:', error));
+    </script>
+</body>
+</html>

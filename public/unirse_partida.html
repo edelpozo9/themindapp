@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unirse a Partida - The Mind</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="header-container"></div> <!-- Contenedor para el encabezado -->
+
+    <main class="container mt-4">
+        <h2 class="text-center">Unirse a Partida</h2>
+        <p class="text-center">Ingresa el nombre de la partida a la que deseas unirte:</p>
+
+        <div class="card mx-auto" style="max-width: 400px;">
+            <div class="card-body">
+                <form id="unirsePartidaForm">
+                    <div class="mb-3">
+                        <label for="nombrePartida" class="form-label">Nombre de la Partida:</label>
+                        <input type="text" class="form-control" id="nombrePartida" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success">Unirse a la Partida</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div> <!-- Contenedor para el pie de página -->
+
+    <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
+    <script>
+        const socket = io(); // Conectar al servidor de Socket.IO
+
+        // Cargar el encabezado desde header.html
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error al cargar el encabezado:', error));
+
+        // Cargar el pie de página desde footer.html
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error al cargar el pie de página:', error));
+
+        // Lógica para unirse a la partida
+        document.getElementById('unirsePartidaForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const nombrePartida = document.getElementById('nombrePartida').value;
+
+            // Emitir el evento para unirse a la partida al servidor
+            socket.emit('unirsePartida', nombrePartida);
+            console.log(`Intentando unirme a la partida: ${nombrePartida}`);
+        });
+
+        // Manejar el evento de respuesta de error al intentar unirse a la partida
+        socket.on('errorPartida', (message) => {
+            alert(message); // Usar alert para mostrar mensaje de error
+        });
+
+        // Manejar el evento de éxito al unirse a la partida
+        socket.on('partidaUnida', (data) => {
+            console.log(`Te has unido a la partida: ${data.nombre}`);
+            // Redirigir a la sala de la partida o realizar alguna otra acción
+            window.location.href = `sala.html?nombre=${data.nombre}`;
+        });
+    </script>
+</body>
+</html>

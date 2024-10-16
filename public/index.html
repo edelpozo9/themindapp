@@ -1,35 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Mind - Página de Inicio</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Juega a The Mind - Juego de Mesa Cooperativo</title>
+    <meta name="description" content="The Mind es un juego de mesa cooperativo donde los jugadores deben jugar cartas en orden ascendente sin comunicarse. ¡Descubre las reglas y comienza a jugar!" />
+    <meta name="keywords" content="The Mind, juego de mesa, cooperativo, cartas, reglas de juego, jugar online" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="canonical" href="http://tusitio.com/" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
-    <header>
-        <h1>Bienvenido a The Mind</h1>
-        <nav>
-            <ul>
-                <li><a href="#info">Información del Juego</a></li>
-                <li><a href="#reglas">Reglas del Juego</a></li>
-                <li><a href="#jugar">Comenzar a Jugar</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <main>
-        <section id="info">
+<body>
+    <div id="header-container"></div>
+    <!-- Contenedor para el encabezado -->
+
+    <main class="container mt-4">
+        <section>
             <h2>¿Qué es The Mind?</h2>
-            <p>
-                The Mind es un juego de mesa cooperativo donde los jugadores deben jugar cartas en orden ascendente sin comunicarse entre sí. 
-                La comunicación no verbal y la intuición son clave para el éxito en este juego único y emocionante.
+            <p class="card-text">
+                The Mind es un juego de mesa cooperativo donde los jugadores deben
+                jugar cartas en orden ascendente sin comunicarse entre sí. La
+                comunicación no verbal y la intuición son clave para el éxito en este
+                juego único y emocionante.
             </p>
         </section>
-
-        <section id="reglas">
+        <section id="jugar" class="mt-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h2 class="card-title">¡Jugar!</h2>
+                    <p class="card-text">
+                        Haz clic en el botón de abajo para unirte a una partida o crear
+                        una nueva.
+                    </p>
+                    <div class="text-center mt-4">
+                        <!-- Contenedor para centrar el botón -->
+                        <a href="jugar.html" class="btn btn-primary btn-lg" id="startGame">Empezar a Jugar</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="reglas" class="features mt-4">
             <h2>Reglas del Juego</h2>
-            <ol>
+            <ol class="card-text">
                 <li>Cada jugador recibe un número determinado de cartas al inicio de cada nivel.</li>
                 <li>Los jugadores deben jugar sus cartas en el orden correcto, de menor a mayor.</li>
                 <li>No se permite la comunicación verbal; los jugadores deben confiar en su intuición.</li>
@@ -37,21 +51,45 @@
                 <li>El juego avanza a niveles más difíciles a medida que se superan los niveles anteriores.</li>
             </ol>
         </section>
-
-        <section id="jugar">
-            <h2>¡Comienza a Jugar!</h2>
-            <p>
-                Haz clic en el botón de abajo para unirte a una partida o crear una nueva.
-            </p>
-            <button id="startGame">Unirme a una partida</button>
+        <section class="mt-4">
+            <h2>Características del Juego</h2>
+            <ul class="card-text">
+                <li>Juego cooperativo que requiere estrategia y sincronización.</li>
+                <li>Niveles de dificultad que aumentan progresivamente.</li>
+                <li>Estimula la comunicación no verbal entre los jugadores.</li>
+                <li>Ideal para jugar en grupo y fortalecer lazos.</li>
+            </ul>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 The Mind. Todos los derechos reservados.</p>
-    </footer>
+    <div id="footer-container"></div>
+    <!-- Contenedor para el pie de página -->
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="app.js"></script>
+    <script src="app.js"></script> <!-- Asegúrate de que app.js use socket.io -->
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Cargar el encabezado desde header.html
+            fetch("header.html")
+                .then((response) => response.text())
+                .then((data) => {
+                    document.getElementById("header-container").innerHTML = data;
+                })
+                .catch((error) =>
+                    console.error("Error al cargar el encabezado:", error)
+                );
+
+            // Cargar el pie de página desde footer.html
+            fetch("footer.html")
+                .then((response) => response.text())
+                .then((data) => {
+                    document.getElementById("footer-container").innerHTML = data;
+                })
+                .catch((error) =>
+                    console.error("Error al cargar el pie de página:", error)
+                );
+        });
+    </script>
 </body>
 </html>

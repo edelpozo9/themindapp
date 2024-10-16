@@ -1,51 +1,71 @@
+html, body {
+    height: 100%; /* Hacer que el html y el body ocupen el 100% de la altura */
+    margin: 0; /* Eliminar márgenes */
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: #FFFFFF; /* Fondo blanco */
+    color: #2B2B2B; /* Texto gris oscuro */
+    font-family: 'Arial', sans-serif;
+    display: flex; /* Usar Flexbox para organizar la página */
+    flex-direction: column; /* Apilar los elementos verticalmente */
 }
 
 header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
+    background-color: #1E3A78; /* Azul marino para el encabezado */
+    padding: 20px 0;
 }
 
-nav ul {
-    list-style: none;
-    padding: 0;
+nav .nav-link {
+    color: white; /* Texto blanco en los enlaces */
 }
 
-nav ul li {
-    display: inline;
-    margin: 0 15px;
+nav .nav-link:hover {
+    text-decoration: underline; /* Subrayado en hover */
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
+h1{
+    color: #ffffff; /* Cian para encabezados */
 }
 
-main {
-    padding: 20px;
-    margin: 20px;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+.container {
+    flex: 1; /* Permitir que el contenedor principal ocupe el espacio restante */
+    margin-top: 20px;
 }
 
-h2 {
-    color: #4CAF50;
+.card {
+    background-color: white; /* Fondo blanco para las tarjetas */
+    border: 1px solid #ddd; /* Borde gris claro */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-bottom: 20px; /* Espacio inferior para separación */
+}
+
+.btn-primary {
+    background-color: #00BFFF; /* Cian para botones */
+    border-color: #00BFFF; /* Bordes de botón */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Azul oscuro en hover */
+    border-color: #0056b3; /* Bordes de botón en hover */
 }
 
 footer {
-    text-align: center;
-    padding: 10px 0;
-    background-color: #333;
-    color: white;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+    background-color: #F4F4F4; /* Fondo gris claro para el pie de página */
+    color: #2B2B2B; /* Texto gris oscuro en el pie de página */
+    padding: 20px 0; /* Espaciado en el pie de página */
+}
+h2 {
+    color: #1E3A78; /* Azul marino para los subtítulos */
+}
+
+p {
+    font-size: 1.1em; /* Aumentar el tamaño de la fuente para mejor legibilidad */
+}
+
+.features {
+    background-color: #F4F4F4; /* Fondo gris claro para la sección de características */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 8px; /* Bordes redondeados */
 }

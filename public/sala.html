@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala de Partida</title>
+</head>
+<body>
+    <h1 id="tituloSala"></h1>
+    <script>
+        // Función para obtener parámetros de la URL
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const queryArray = queryString.split('&');
+            queryArray.forEach(param => {
+                const [key, value] = param.split('=');
+                params[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        // Obtener el nombre de la partida de la URL
+        const params = getQueryParams();
+        const nombrePartida = params.nombre;
+
+        // Mostrar el nombre de la partida en la página
+        document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida}`;
+    </script>
+</body>
+</html>
