@@ -16,7 +16,9 @@ const CARTAS = Array.from({ length: 100 }, (_, i) => i + 1); // Crea un array de
 
 // Evento que se ejecuta cuando un cliente se conecta
 io.on("connection", (socket) => {
-  console.log(`A user connected: ${socket.id}`);
+  const userId = socket.handshake.query.playerId; // Obtener playerId del handshake
+  console.log(`A user connected: ${userId}`);
+  
 
   // Manejar la creación de una nueva partida
   socket.on("crearPartida", (nombre, numJugadores) => {
@@ -37,6 +39,14 @@ io.on("connection", (socket) => {
           cartas: [], // Aquí puedes definir las cartas que usarás en el juego
         },
       };
+
+      // Crear el jugador inicial con su userId
+      partidas[nombre].jugadores[userId] = {
+        nombre: `Jugador ${userId}`, // Puedes personalizar el nombre
+        vida: 3, // Asignar vidas al jugador
+        cartasJugadas: [], // Cartas que ha jugado el jugador
+      };
+
       socket.emit("partidaCreada", { nombre, numJugadores });
       console.log(`Partida creada: ${nombre} con ${numJugadores} jugadores.`);
     }
@@ -46,27 +56,33 @@ io.on("connection", (socket) => {
   socket.on("unirsePartida", (nombrePartida) => {
     const partida = partidas[nombrePartida];
     if (partida) {
-      const jugadorID = socket.id;
+      
 
       // Verificar si la partida ya está llena
       if (Object.keys(partida.jugadores).length >= partida.numJugadores) {
         socket.emit("errorPartida", "La partida ya está llena.");
         console.log(
-          `Jugador ${jugadorID} intentó unirse a una partida llena: ${nombrePartida}`
+          `Jugador ${userId} intentó unirse a una partida llena: ${nombrePartida}`
         );
       } else {
-        partida.jugadores[jugadorID] = {
-          nombre: jugadorID, // Puedes cambiarlo a un nombre más amigable
+        partida.jugadores[userId] = {
+          nombre: userId, // Puedes cambiarlo a un nombre más amigable
           vida: 3, // Cada jugador comienza con 3 vidas
           cartasJugadas: [], // Cartas que han jugado
         };
 
         const jugadores = Object.keys(partida.jugadores).map(
-          (id) => `Jugador ${id}`
+          (id) => ({
+            playerId: id,
+            nombre: partida.jugadores[id].nombre,
+            vidas: partida.jugadores[id].vida,
+          })
         );
+  
+        // Emitir la lista actualizada de jugadores
         io.emit("actualizarJugadores", jugadores);
         console.log(
-          `Jugador ${socket.id} se unió a la partida: ${nombrePartida}`
+          `Jugador ${userId} se unió a la partida: ${nombrePartida}`
         );
 
         // Emitir 'partidaUnida' al jugador que se acaba de unir para redirigirlo a la sala
@@ -80,17 +96,17 @@ io.on("connection", (socket) => {
   // Evento para desconexión del cliente
   // Evento que se ejecuta cuando un cliente se desconecta
   socket.on("disconnect", (reason) => {
-    console.log(`A user disconnected: ${socket.id}, Reason: ${reason}`);
+   // console.log(`A user disconnected: ${userId}, Reason: ${reason}`);
 
     // Buscar y eliminar al jugador de la partida correspondiente
     for (const partidaNombre in partidas) {
       const partida = partidas[partidaNombre];
 
       // Si el jugador está en esta partida, lo eliminamos
-      if (partida.jugadores[socket.id]) {
-        delete partida.jugadores[socket.id];
+      if (partida.jugadores[userId]) {
+        delete partida.jugadores[userId];
         console.log(
-          `Jugador ${socket.id} eliminado de la partida ${partidaNombre}`
+          `Jugador ${userId} eliminado de la partida ${partidaNombre}`
         );
 
         // Actualizar la lista de jugadores en la partida
@@ -131,9 +147,9 @@ io.on("connection", (socket) => {
 // Función para gestionar la salida de un jugador de una partida
 function dejarPartida(socket, nombrePartida) {
   const partida = partidas[nombrePartida];
-  if (partida && partida.jugadores[socket.id]) {
-    delete partida.jugadores[socket.id];
-    console.log(`Jugador ${socket.id} ha dejado la partida: ${nombrePartida}`);
+  if (partida && partida.jugadores[userId]) {
+    delete partida.jugadores[userId];
+    console.log(`Jugador ${userId} ha dejado la partida: ${nombrePartida}`);
 
     // Emitir una actualización a todos los jugadores para que sepan que un jugador ha salido
     const jugadores = Object.keys(partida.jugadores).map(

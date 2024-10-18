@@ -1,36 +1,30 @@
 // public/app.js
-const socket = io();
 
 
-socket.on('connect', () => {
-    console.log('Conectado al servidor');
-});
+// Almacenar o recuperar el playerId del localStorage
+let playerId = localStorage.getItem('playerId');
+if (!playerId) {
+    playerId = generatePlayerId();
+    localStorage.setItem('playerId', playerId);
+}
 
-// Espera a que el DOM esté completamente cargado antes de agregar event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    const startGameButton = document.getElementById('startGame');
+function generatePlayerId() {
+    // Generar un identificador único para el jugador
+    return 'player-' + Math.random().toString(36).substr(2, 9);
+}
 
-    if (startGameButton) {
-        startGameButton.addEventListener('click', () => {
-            const nombrePartida = document.getElementById('nombrePartida').value.trim();
-            const numJugadores = document.getElementById('numJugadores').value;
-
-            if (nombrePartida && numJugadores) {
-                console.log(`Intentando crear la partida: ${nombrePartida} con ${numJugadores} jugadores.`);
-                socket.emit('crearPartida', nombrePartida, parseInt(numJugadores));
-            } else {
-                alert("Error", "Por favor, ingresa un nombre de partida y el número de jugadores.", "error");
-            }
-        });
-    } else {
-        console.error('Elemento con ID "startGame" no encontrado');
+// Conectar al servidor de Socket.IO y enviar el playerId como parámetro de consulta
+const socket = io({
+    query: {
+        playerId: playerId // Enviar el playerId al servidor
     }
 });
-// Manejar el evento de error errorPartidaExistente
-socket.on('errorPartidaExistente', (message) => {
-    console.log('Ya existe una partida con ese nombre'); // Esto debería aparecer si la partida ya existe
-    alert("Error", message, "error");
+
+socket.on('connect', () => {
+    console.log(`Conectado al servidor: ${playerId}`);
 });
+
+
 
 // Manejar el evento de éxito de la creación de la partida
 socket.on('partidaCreada', ({ nombre, numJugadores }) => {

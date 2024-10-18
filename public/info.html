@@ -17,6 +17,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
+    
   </head>
 
   <body>
@@ -99,7 +100,8 @@
 
     <div id="footer-container"></div>
     <!-- Contenedor para el pie de página -->
-
+    <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
+    <script src="app.js"></script> <!-- Asegúrate de que app.js use socket.io -->
     <script>
       // Cargar el encabezado desde header.html
       fetch("header.html")

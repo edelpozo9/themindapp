@@ -49,8 +49,8 @@
     <div id="footer-container"></div> <!-- Contenedor para el pie de página -->
 
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
-    <script>
-        const socket = io(); // Conectar al servidor de Socket.IO
+    <script src="app.js"></script>
+    <script>        
 
         // Cargar el encabezado desde header.html
         fetch('header.html')
@@ -67,7 +67,7 @@
                 document.getElementById('footer-container').innerHTML = data;
             })
             .catch(error => console.error('Error al cargar el pie de página:', error));
-
+       
         // Lógica para iniciar la partida
         document.getElementById('crearPartidaForm').addEventListener('submit', function (event) {
             event.preventDefault();
@@ -76,13 +76,13 @@
 
             // Emitir el evento para crear la partida al servidor
             socket.emit('crearPartida', nombrePartida, numJugadores);
-            
+
         });
 
         // Manejar el evento de respuesta de creación de partida
         socket.on('partidaCreada', (data) => {
             console.log('Datos de la partida creada:', data); // Agregar esta línea para depuración
-            
+
             // Redirigir a la sala de la partida
             window.location.href = `sala.html?nombre=${data.nombre}`; // Cambia esto a la URL de la sala con el nombre
         });

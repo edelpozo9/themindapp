@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div id="header-container"></div> <!-- Contenedor para el encabezado -->
 
@@ -32,19 +34,9 @@
     <div id="footer-container"></div> <!-- Contenedor para el pie de página -->
 
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
+    <script src="app.js"></script>
     <script>
-        const socket = io(); // Conectar al servidor de Socket.IO
- // Manejador para errores de conexión
- socket.on("connect_error", (error) => {
-        console.error("Connection error:", error);
-        alert("Error de conexión con el servidor. Por favor, intenta nuevamente.");
-    });
-
-    // Manejador para desconexión
-    socket.on("disconnect", (reason) => {
-        console.warn("Disconnected from server:", reason);
-        alert("Se ha perdido la conexión con el servidor: " + reason);
-    });
+        
         // Cargar el encabezado desde header.html
         fetch('header.html')
             .then(response => response.text())
@@ -84,4 +76,5 @@
         });
     </script>
 </body>
+
 </html>
