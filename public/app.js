@@ -1,6 +1,7 @@
 // public/app.js
 const socket = io();
 
+
 socket.on('connect', () => {
     console.log('Conectado al servidor');
 });
@@ -18,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`Intentando crear la partida: ${nombrePartida} con ${numJugadores} jugadores.`);
                 socket.emit('crearPartida', nombrePartida, parseInt(numJugadores));
             } else {
-                swal("Error", "Por favor, ingresa un nombre de partida y el número de jugadores.", "error");
+                alert("Error", "Por favor, ingresa un nombre de partida y el número de jugadores.", "error");
             }
         });
     } else {
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Manejar el evento de error errorPartidaExistente
 socket.on('errorPartidaExistente', (message) => {
     console.log('Ya existe una partida con ese nombre'); // Esto debería aparecer si la partida ya existe
-    swal("Error", message, "error");
+    alert("Error", message, "error");
 });
 
 // Manejar el evento de éxito de la creación de la partida
