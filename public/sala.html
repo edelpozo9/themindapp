@@ -55,6 +55,7 @@
             
             const listaJugadores = document.getElementById('listaJugadores');
             listaJugadores.innerHTML = ''; // Limpiar la lista antes de agregar
+            
             jugadores.forEach(jugador => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `<td>${jugador.playerId}</td>`; // Solo mostrar el Player ID
