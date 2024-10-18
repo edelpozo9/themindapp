@@ -18,7 +18,6 @@ const CARTAS = Array.from({ length: 100 }, (_, i) => i + 1); // Crea un array de
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.playerId; // Obtener playerId del handshake
   console.log(`A user connected: ${userId}`);
-  
 
   // Manejar la creación de una nueva partida
   socket.on("crearPartida", (nombre, numJugadores) => {
@@ -56,8 +55,6 @@ io.on("connection", (socket) => {
   socket.on("unirsePartida", (nombrePartida) => {
     const partida = partidas[nombrePartida];
     if (partida) {
-      
-
       // Verificar si la partida ya está llena
       if (Object.keys(partida.jugadores).length >= partida.numJugadores) {
         socket.emit("errorPartida", "La partida ya está llena.");
@@ -71,19 +68,15 @@ io.on("connection", (socket) => {
           cartasJugadas: [], // Cartas que han jugado
         };
 
-        const jugadores = Object.keys(partida.jugadores).map(
-          (id) => ({
-            playerId: id,
-            nombre: partida.jugadores[id].nombre,
-            vidas: partida.jugadores[id].vida,
-          })
-        );
-  
-        // Emitir la lista actualizada de jugadores
-        io.emit("actualizarJugadores", jugadores);
-        console.log(
-          `Jugador ${userId} se unió a la partida: ${nombrePartida}`
-        );
+        const jugadores = Object.keys(partida.jugadores).map((id) => ({
+          playerId: id,
+          nombre: partida.jugadores[id].nombre,
+          vidas: partida.jugadores[id].vida,
+        }));
+
+        // Emitir la lista actualizada de jugadores y el nombre de la partida
+        io.emit("actualizarJugadores", { jugadores, nombrePartida });
+        console.log(`Jugador ${userId} se unió a la partida: ${nombrePartida}`);
 
         // Emitir 'partidaUnida' al jugador que se acaba de unir para redirigirlo a la sala
         socket.emit("partidaUnida", { nombre: nombrePartida });
@@ -96,7 +89,7 @@ io.on("connection", (socket) => {
   // Evento para desconexión del cliente
   // Evento que se ejecuta cuando un cliente se desconecta
   socket.on("disconnect", (reason) => {
-   // console.log(`A user disconnected: ${userId}, Reason: ${reason}`);
+    // console.log(`A user disconnected: ${userId}, Reason: ${reason}`);
 
     // Buscar y eliminar al jugador de la partida correspondiente
     for (const partidaNombre in partidas) {
@@ -113,7 +106,7 @@ io.on("connection", (socket) => {
         const jugadores = Object.keys(partida.jugadores).map(
           (id) => `Jugador ${id}`
         );
-        io.emit("actualizarJugadores", jugadores);
+        io.emit("actualizarJugadores", { jugadores, partidaNombre });
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
         if (Object.keys(partida.jugadores).length === 0) {

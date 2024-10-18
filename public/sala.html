@@ -45,22 +45,23 @@
 
         // Mostrar el nombre de la partida en la página
         document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida}`;
-       
-       
+
         // Unirse a la partida
         socket.emit('unirsePartida', nombrePartida);
 
         // Actualizar la lista de jugadores cuando se recibe el evento
-        socket.on('actualizarJugadores', (jugadores) => {
-            
-            const listaJugadores = document.getElementById('listaJugadores');
-            listaJugadores.innerHTML = ''; // Limpiar la lista antes de agregar
-            
-            jugadores.forEach(jugador => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${jugador.playerId}</td>`; // Solo mostrar el Player ID
-                listaJugadores.appendChild(tr);
-            });
+        socket.on('actualizarJugadores', ({ jugadores, nombrePartida: nombrePartidaSocket }) => {
+            // Solo actualizar si el nombre de la partida coincide
+            if (nombrePartidaSocket === nombrePartida) {
+                const listaJugadores = document.getElementById('listaJugadores');
+                listaJugadores.innerHTML = ''; // Limpiar la lista antes de agregar
+
+                jugadores.forEach(jugador => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${jugador.playerId}</td>`; // Solo mostrar el Player ID
+                    listaJugadores.appendChild(tr);
+                });
+            }
         });
 
         // Manejar el evento de error al unirse a la partida
