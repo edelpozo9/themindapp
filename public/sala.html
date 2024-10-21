@@ -38,19 +38,19 @@
             });
             return params;
         }
- 
+
         // Obtener el nombre de la partida de la URL
         const params = getQueryParams();
         const nombrePartida = params.nombre;
+        const nombreUsuario = localStorage.getItem('nombreUsuario'); // Recuperar el nombreUsuario desde localStorage
 
         // Mostrar el nombre de la partida en la página
         document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida}`;
 
-        // Unirse a la partida
-        socket.emit('unirsePartida', nombrePartida);
+
 
         // Actualizar la lista de jugadores cuando se recibe el evento
-        socket.on('actualizarJugadores', ({ jugadores, nombrePartida: nombrePartidaSocket }) => {
+        socket.on('actualizarJugadores', ({jugadores, nombrePartida: nombrePartidaSocket }) => {
             // Solo actualizar si el nombre de la partida coincide
             if (nombrePartidaSocket === nombrePartida) {
                 const listaJugadores = document.getElementById('listaJugadores');
@@ -58,11 +58,13 @@
 
                 jugadores.forEach(jugador => {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${jugador.playerId}</td>`; // Solo mostrar el Player ID
+                    tr.innerHTML = `<td>${jugador.userId} - ${jugador.nombreUsuario}</td>`; // Solo mostrar el Player ID
                     listaJugadores.appendChild(tr);
                 });
             }
         });
+        // Unirse a la partida
+        socket.emit('unirsePartida', nombrePartida, nombreUsuario);
 
         // Manejar el evento de error al unirse a la partida
         socket.on('errorPartida', (message) => {

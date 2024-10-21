@@ -14,15 +14,20 @@
 
     <main class="container mt-4">
         <h2 class="text-center">Unirse a Partida</h2>
-        <p class="text-center">Ingresa el nombre de la partida a la que deseas unirte:</p>
+        <p class="text-center">Ingresa el nombre de la partida y tu nombre de usuario:</p>
 
         <div class="card mx-auto" style="max-width: 400px;">
             <div class="card-body">
                 <form id="unirsePartidaForm">
                     <div class="mb-3">
+                        <label for="nombreUsuario" class="form-label">Tu Nombre de Usuario:</label>
+                        <input type="text" class="form-control" id="nombreUsuario" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="nombrePartida" class="form-label">Nombre de la Partida:</label>
                         <input type="text" class="form-control" id="nombrePartida" required>
                     </div>
+
                     <div class="text-center">
                         <button type="submit" class="btn btn-success">Unirse a la Partida</button>
                     </div>
@@ -36,7 +41,8 @@
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
     <script src="app.js"></script>
     <script>
-        
+
+
         // Cargar el encabezado desde header.html
         fetch('header.html')
             .then(response => response.text())
@@ -57,10 +63,11 @@
         document.getElementById('unirsePartidaForm').addEventListener('submit', function (event) {
             event.preventDefault();
             const nombrePartida = document.getElementById('nombrePartida').value;
+            const nombreUsuario = document.getElementById('nombreUsuario').value;
 
-            // Emitir el evento para unirse a la partida al servidor
-            socket.emit('unirsePartida', nombrePartida);
-            console.log(`Intentando unirme a la partida: ${nombrePartida}`);
+            // Emitir el evento para unirse a la partida al servidor con nombreUsuario
+            socket.emit('unirsePartida', nombrePartida, nombreUsuario);
+            console.log(`Intentando unirme a la partida: ${nombrePartida} como ${nombreUsuario}`);
         });
 
         // Manejar el evento de respuesta de error al intentar unirse a la partida
@@ -70,9 +77,16 @@
 
         // Manejar el evento de éxito al unirse a la partida
         socket.on('partidaUnida', (data) => {
-            console.log(`Te has unido a la partida: ${data.nombre}`);
-            // Redirigir a la sala de la partida o realizar alguna otra acción
-            window.location.href = `sala.html?nombre=${data.nombre}`;
+            const nombrePartida = data.nombrePartida; // Este debe estar definido correctamente
+            const nombreUsuario = data.nombreUsuario; // También asegúrate de que esto esté definido
+
+            // Guardar el nombreUsuario en localStorage
+            localStorage.setItem('nombreUsuario', nombreUsuario);
+
+            console.log(`Te has unido a la partida: ${data.nombrePartida}`); // Esto debe mostrar el nombre correcto
+            // Redirigir a la sala de la partida
+            window.location.href = `sala.html?nombre=${nombrePartida}`; // Cambia esto a la URL de la sala con el nombre
+            
         });
     </script>
 </body>

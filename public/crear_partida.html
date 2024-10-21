@@ -21,6 +21,10 @@
             <div class="card-body">
                 <form id="crearPartidaForm">
                     <div class="mb-3">
+                        <label for="nombreUsuario" class="form-label">Nombre de Usuario:</label>
+                        <input type="text" class="form-control" id="nombreUsuario" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="nombrePartida" class="form-label">Nombre de la Partida:</label>
                         <input type="text" class="form-control" id="nombrePartida" required>
                     </div>
@@ -50,7 +54,7 @@
 
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
     <script src="app.js"></script>
-    <script>        
+    <script>
 
         // Cargar el encabezado desde header.html
         fetch('header.html')
@@ -67,24 +71,30 @@
                 document.getElementById('footer-container').innerHTML = data;
             })
             .catch(error => console.error('Error al cargar el pie de página:', error));
-       
+
         // Lógica para iniciar la partida
         document.getElementById('crearPartidaForm').addEventListener('submit', function (event) {
             event.preventDefault();
             const nombrePartida = document.getElementById('nombrePartida').value;
             const numJugadores = document.getElementById('numJugadores').value;
+            const nombreUsuario = document.getElementById('nombreUsuario').value;
 
             // Emitir el evento para crear la partida al servidor
-            socket.emit('crearPartida', nombrePartida, numJugadores);
+            socket.emit('crearPartida', nombrePartida, numJugadores, nombreUsuario);
 
         });
 
         // Manejar el evento de respuesta de creación de partida
         socket.on('partidaCreada', (data) => {
-            console.log('Datos de la partida creada:', data); // Agregar esta línea para depuración
+            const nombrePartida = data.nombrePartida;
+            const nombreUsuario = data.nombreUsuario; // Asegúrate de enviar también el nombreUsuario desde el servidor
+
+            // Guardar el nombreUsuario en localStorage
+            localStorage.setItem('nombreUsuario', nombreUsuario);
 
             // Redirigir a la sala de la partida
-            window.location.href = `sala.html?nombre=${data.nombre}`; // Cambia esto a la URL de la sala con el nombre
+            window.location.href = `sala.html?nombre=${data.nombrePartida}`; // Cambia esto a la URL de la sala con el nombre
+            
         });
 
         // Manejar el evento de error

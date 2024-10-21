@@ -10,7 +10,7 @@ if (!playerId) {
 
 function generatePlayerId() {
     // Generar un identificador único para el jugador
-    return 'player-' + Math.random().toString(36).substr(2, 9);
+    return Math.random().toString(36).substr(2, 9);
 }
 
 // Conectar al servidor de Socket.IO y enviar el playerId como parámetro de consulta
