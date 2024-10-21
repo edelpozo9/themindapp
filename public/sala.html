@@ -29,17 +29,19 @@
             <!-- Lista de jugadores -->
             <div class="col-md-4">
                 <div class="border rounded p-3">
-                    <h3 class="mb-3">Jugadores en la partida:</h3>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Nombre del jugador</th>
-                            </tr>
-                        </thead>
-                        <tbody id="listaJugadores">
-                            <!-- La lista de jugadores se llenará aquí -->
-                        </tbody>
-                    </table>
+                    <button id="toggleListaJugadores" class="btn btn-secondary mb-3">Lista de Jugadores</button>
+                    <div id="jugadoresContainer">
+                        <table class="table table-striped" id="jugadoresTabla" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>Nombre del jugador</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listaJugadores">
+                                <!-- La lista de jugadores se llenará aquí -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,9 +88,6 @@
         const nombrePartida = params.nombre;
         const nombreUsuario = localStorage.getItem('nombreUsuario'); // Recuperar el nombreUsuario desde localStorage
 
-        // Mostrar el nombre de la partida en la página
-        document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida}`;
-
         // Actualizar la lista de jugadores cuando se recibe el evento
         socket.on('actualizarJugadores', ({jugadores, nombrePartida: nombrePartidaSocket, numJugadores }) => {
             // Solo actualizar si el nombre de la partida coincide
@@ -103,7 +102,7 @@
                 });
 
                 // Mostrar el número de jugadores y el tamaño de la sala
-                document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida} (Jugadores: ${jugadores.length}/${numJugadores})`;
+                document.getElementById('tituloSala').innerText = `Partida: ${nombrePartida} (Jugadores conectados: ${jugadores.length}/${numJugadores})`;
 
                 // Habilitar el botón "Iniciar Partida" si la sala está completa
                 const btnIniciarPartida = document.getElementById('btnIniciarPartida');
@@ -130,6 +129,15 @@
             socket.emit('iniciarPartida', nombrePartida); // Emitir evento para iniciar la partida
         });
 
+        // Funcionalidad para mostrar/ocultar la lista de jugadores
+        document.getElementById('toggleListaJugadores').addEventListener('click', function () {
+            const tablaJugadores = document.getElementById('jugadoresTabla');
+            if (tablaJugadores.style.display === 'none') {
+                tablaJugadores.style.display = 'table'; // Mostrar tabla
+            } else {
+                tablaJugadores.style.display = 'none'; // Ocultar tabla
+            }
+        });
     </script>
 </body>
 
