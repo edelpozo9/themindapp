@@ -178,6 +178,17 @@ io.on("connection", (socket) => {
   socket.on("dejarPartida", (nombrePartida) => {
     manejarDesconexion(userId, "Usuario dejó la partida"); // Llama a la función de desconexión
   });
+  socket.on("iniciarPartida", (nombrePartida) => {
+    const partida = partidas[nombrePartida];
+    if (partida) {
+        // Aquí puedes añadir la lógica para iniciar la partida
+        // Por ejemplo, barajar las cartas, elegir un jugador inicial, etc.
+        console.log(
+          `PArtida iniciada`
+        );
+        io.emit("partidaIniciada", nombrePartida); // Notificar a todos los jugadores que la partida ha iniciado
+    }
+  });
 
   // Función para manejar la desconexión de un jugador
   function manejarDesconexion(userId, reason) {
@@ -223,14 +234,7 @@ io.on("connection", (socket) => {
   });
 });
 
-socket.on("iniciarPartida", (nombrePartida) => {
-  const partida = partidas[nombrePartida];
-  if (partida) {
-      // Aquí puedes añadir la lógica para iniciar la partida
-      // Por ejemplo, barajar las cartas, elegir un jugador inicial, etc.
-      io.emit("partidaIniciada", nombrePartida); // Notificar a todos los jugadores que la partida ha iniciado
-  }
-});
+
 
 
 // Función para gestionar la salida de un jugador de una partida

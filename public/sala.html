@@ -23,6 +23,7 @@
                 <!-- La lista de jugadores se llenará aquí -->
             </tbody>
         </table>
+        <button id="btnIniciarPartida" class="btn btn-success mt-3" disabled>Iniciar Partida</button>
         <button id="btnDejarPartida" class="btn btn-leave">Dejar Partida</button>
     </div>
 
@@ -63,7 +64,11 @@
                 });
 
                 // Mostrar el número de jugadores y el tamaño de la sala
-                document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida} (Jugadores conectados: ${jugadores.length} de ${numJugadores})`;
+                document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida} (Jugadores: ${jugadores.length}/${numJugadores})`;
+
+                // Habilitar el botón "Iniciar Partida" si la sala está completa
+                const btnIniciarPartida = document.getElementById('btnIniciarPartida');
+                btnIniciarPartida.disabled = jugadores.length < numJugadores; // Habilitar si el número de jugadores es igual al tamaño de la sala
             }
         });
 
@@ -81,7 +86,12 @@
             window.location.href = 'index.html'; // Redirigir a la página principal
         });
 
-        
+        // Agregar evento al botón para iniciar la partida (solo el evento sin redirección)
+        document.getElementById('btnIniciarPartida').addEventListener('click', function () {
+            socket.emit('iniciarPartida', nombrePartida); // Emitir evento para iniciar la partida
+            // Aquí puedes añadir más lógica si es necesario, como cambiar el estado del botón o mostrar un mensaje
+        });
+
     </script>
 </body>
 
