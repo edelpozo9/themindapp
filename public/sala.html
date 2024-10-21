@@ -6,6 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sala de Partida</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Color de fondo suave */
+        }
+        h1 {
+            color: #28a745; /* Color verde para el título */
+        }
+        .card {
+            background-color: #ffffff; /* Color blanco para la tarjeta */
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+        }
+        .btn-leave {
+            margin-top: 20px;
+            background-color: #dc3545; /* Color rojo para el botón de dejar la partida */
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -22,11 +40,12 @@
                 <!-- La lista de jugadores se llenará aquí -->
             </tbody>
         </table>
+        <button id="btnDejarPartida" class="btn btn-leave">Dejar Partida</button> <!-- Botón para dejar la partida -->
     </div>
+
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
     <script src="app.js"></script>
     <script>
-
         // Función para obtener parámetros de la URL
         function getQueryParams() {
             const params = {};
@@ -47,8 +66,6 @@
         // Mostrar el nombre de la partida en la página
         document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida}`;
 
-
-
         // Actualizar la lista de jugadores cuando se recibe el evento
         socket.on('actualizarJugadores', ({jugadores, nombrePartida: nombrePartidaSocket }) => {
             // Solo actualizar si el nombre de la partida coincide
@@ -58,11 +75,12 @@
 
                 jugadores.forEach(jugador => {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${jugador.userId} - ${jugador.nombreUsuario}</td>`; // Solo mostrar el Player ID
+                    tr.innerHTML = `<td>${jugador.userId} - ${jugador.nombreUsuario}</td>`; // Mostrar Player ID y nombre de usuario
                     listaJugadores.appendChild(tr);
                 });
             }
         });
+
         // Unirse a la partida
         socket.emit('unirsePartida', nombrePartida, nombreUsuario);
 
@@ -70,6 +88,13 @@
         socket.on('errorPartida', (message) => {
             alert(message); // Mostrar un mensaje de error
             // Podrías redirigir al usuario o manejar la lógica aquí
+        });
+
+        // Agregar evento al botón para dejar la partida
+        document.getElementById('btnDejarPartida').addEventListener('click', function () {
+            socket.emit('dejarPartida', nombrePartida); // Emitir evento para dejar la partida
+            console.log(`Jugador ${nombreUsuario} ha dejado la partida: ${nombrePartida}`);
+            window.location.href = 'index.html'; // Redirigir a la página principal o donde desees
         });
     </script>
 </body>

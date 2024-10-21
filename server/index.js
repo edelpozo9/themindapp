@@ -110,43 +110,49 @@ io.on("connection", (socket) => {
     //manejarDesconexion(userId, reason);
   });
 
+  // Manejar el evento de dejar la partida
+  socket.on("dejarPartida", (nombrePartida) => {
+    manejarDesconexion(userId, "Usuario dejó la partida"); // Llama a la función de desconexión
+  });
+
   // Función para manejar la desconexión de un jugador
   function manejarDesconexion(userId, reason) {
     // console.log(`A user disconnected: ${userId}, Reason: ${reason}`);
 
     // Buscar y eliminar al jugador de la partida correspondiente
-    for (const partidaNombre in partidas) {
-      const partida = partidas[partidaNombre];
+    for (const nombrePartida in partidas) {
+      const partida = partidas[nombrePartida];
 
       // Si el jugador está en esta partida, lo eliminamos
       if (partida.jugadores[userId]) {
         delete partida.jugadores[userId];
         console.log(
-          `Jugador ${userId} eliminado de la partida ${partidaNombre}`
+          `Jugador ${userId} eliminado de la partida ${nombrePartida}`
         );
 
-        // Actualizar la lista de jugadores en la partida
-        const jugadores = Object.keys(partida.jugadores).map(
-          (id) => `Jugador ${id}`
-        );
-        io.emit("actualizarJugadores", { jugadores, partidaNombre });
+        // Emitir la lista actualizada de jugadores y el nombre de la partida
+        const jugadores = Object.values(partida.jugadores).map((jugador) => ({
+          userId: jugador.userId,
+          nombreUsuario: jugador.nombreUsuario,
+          vidas: jugador.vida,
+        }));
+
+        // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
+        io.emit("actualizarJugadores", { jugadores, nombrePartida });      
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
         if (Object.keys(partida.jugadores).length === 0) {
-          // Guardamos el timeout en la partida para poder cancelarlo si un jugador se reconecta
-          partida.eliminarTimeout = setTimeout(() => {
-            // Verificar nuevamente si la partida sigue vacía después de 2 segundos
-            if (Object.keys(partida.jugadores).length === 0) {
-              delete partidas[partidaNombre];
-              console.log(
-                `Partida ${partidaNombre} eliminada porque no quedaron jugadores después de 1 segundo.`
-              );
-            } else {
-              console.log(
-                `Partida ${partidaNombre} no se eliminó porque hubo reconexión de jugadores.`
-              );
-            }
-          }, 1000); // Esperar 1 segundos antes de eliminar la partida
+          // Verificar nuevamente si la partida sigue vacía después de 2 segundos
+          if (Object.keys(partida.jugadores).length === 0) {
+            delete partidas[nombrePartida];
+            console.log(
+              `Partida ${nombrePartida} eliminada porque no quedaron jugadores después de 1 segundo.`
+            );
+          } else {
+            console.log(
+              `Partida ${nombrePartida} no se eliminó porque hubo reconexión de jugadores.`
+            );
+          }
         }
 
         break; // Rompemos el bucle porque ya encontramos y eliminamos al jugador
