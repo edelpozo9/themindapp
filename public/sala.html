@@ -6,29 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sala de Partida</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa; /* Color de fondo suave */
-        }
-        h1 {
-            color: #28a745; /* Color verde para el título */
-        }
-        .card {
-            background-color: #ffffff; /* Color blanco para la tarjeta */
-            border-radius: 10px; /* Bordes redondeados */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-        }
-        .btn-leave {
-            margin-top: 20px;
-            background-color: #dc3545; /* Color rojo para el botón de dejar la partida */
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css"> <!-- Enlace a la hoja de estilos -->
 </head>
 
-<body>
+<body class="sala-container">
     <div class="container mt-4">
-        <h1 id="tituloSala"></h1>
+        <h1 id="tituloSala" class="sala-title"></h1>
         <h2>Jugadores en la partida:</h2>
         <table class="table table-striped">
             <thead>
@@ -40,7 +23,7 @@
                 <!-- La lista de jugadores se llenará aquí -->
             </tbody>
         </table>
-        <button id="btnDejarPartida" class="btn btn-leave">Dejar Partida</button> <!-- Botón para dejar la partida -->
+        <button id="btnDejarPartida" class="btn btn-leave">Dejar Partida</button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
@@ -67,7 +50,7 @@
         document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida}`;
 
         // Actualizar la lista de jugadores cuando se recibe el evento
-        socket.on('actualizarJugadores', ({jugadores, nombrePartida: nombrePartidaSocket }) => {
+        socket.on('actualizarJugadores', ({jugadores, nombrePartida: nombrePartidaSocket, numJugadores }) => {
             // Solo actualizar si el nombre de la partida coincide
             if (nombrePartidaSocket === nombrePartida) {
                 const listaJugadores = document.getElementById('listaJugadores');
@@ -78,6 +61,9 @@
                     tr.innerHTML = `<td>${jugador.userId} - ${jugador.nombreUsuario}</td>`; // Mostrar Player ID y nombre de usuario
                     listaJugadores.appendChild(tr);
                 });
+
+                // Mostrar el número de jugadores y el tamaño de la sala
+                document.getElementById('tituloSala').innerText = `Bienvenido a la sala: ${nombrePartida} (Jugadores conectados: ${jugadores.length} de ${numJugadores})`;
             }
         });
 
@@ -87,15 +73,15 @@
         // Manejar el evento de error al unirse a la partida
         socket.on('errorPartida', (message) => {
             alert(message); // Mostrar un mensaje de error
-            // Podrías redirigir al usuario o manejar la lógica aquí
         });
 
         // Agregar evento al botón para dejar la partida
         document.getElementById('btnDejarPartida').addEventListener('click', function () {
             socket.emit('dejarPartida', nombrePartida); // Emitir evento para dejar la partida
-            console.log(`Jugador ${nombreUsuario} ha dejado la partida: ${nombrePartida}`);
-            window.location.href = 'index.html'; // Redirigir a la página principal o donde desees
+            window.location.href = 'index.html'; // Redirigir a la página principal
         });
+
+        
     </script>
 </body>
 

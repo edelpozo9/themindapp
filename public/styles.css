@@ -24,8 +24,12 @@ nav .nav-link:hover {
     text-decoration: underline; /* Subrayado en hover */
 }
 
-h1{
+h1 {
     color: #ffffff; /* Cian para encabezados */
+}
+
+h2 {
+    color: #1E3A78; /* Azul marino para los subtítulos */
 }
 
 .container {
@@ -34,7 +38,7 @@ h1{
 }
 
 .card {
-    background-color: white; /* Fondo blanco para las tarjetas */
+    background-color: #ffffff; /* Fondo blanco para las tarjetas */
     border: 1px solid #ddd; /* Borde gris claro */
     border-radius: 8px; /* Bordes redondeados */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
@@ -56,9 +60,6 @@ footer {
     color: #2B2B2B; /* Texto gris oscuro en el pie de página */
     padding: 20px 0; /* Espaciado en el pie de página */
 }
-h2 {
-    color: #1E3A78; /* Azul marino para los subtítulos */
-}
 
 p {
     font-size: 1.1em; /* Aumentar el tamaño de la fuente para mejor legibilidad */
@@ -68,4 +69,31 @@ p {
     background-color: #F4F4F4; /* Fondo gris claro para la sección de características */
     padding: 20px; /* Espaciado interno */
     border-radius: 8px; /* Bordes redondeados */
+}
+
+/* Estilos específicos para sala.html */
+.sala-container {
+    background-color: #f8f9fa; /* Fondo suave */
+}
+
+.sala-title {
+    color: #28a745; /* Verde para el título */
+}
+
+.sala-card {
+    background-color: #ffffff; /* Blanco para las tarjetas */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.btn-leave {
+    margin-top: 20px;
+    background-color: #dc3545; /* Rojo para el botón de dejar partida */
+    color: white;
+}
+
+.btn-start {
+    margin-top: 20px;
+    background-color: #28a745; /* Verde para el botón de iniciar */
+    color: white;
 }

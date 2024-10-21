@@ -107,7 +107,7 @@ io.on("connection", (socket) => {
         }));
 
         // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-        io.emit("actualizarJugadores", { jugadores, nombrePartida });
+        io.emit("actualizarJugadores", { jugadores, nombrePartida, numJugadores: partida.numJugadores });
       } else {
         // Verificar si la partida ya está llena
         if (Object.keys(partida.jugadores).length >= partida.numJugadores) {
@@ -134,7 +134,7 @@ io.on("connection", (socket) => {
           }));
 
           // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-          io.emit("actualizarJugadores", { jugadores, nombrePartida });
+          io.emit("actualizarJugadores", { jugadores, nombrePartida, numJugadores: partida.numJugadores });
           console.log(
             `Jugador ${userId} (${nombreUsuario}) se unió a la partida: ${nombrePartida}`
           );
@@ -202,7 +202,7 @@ io.on("connection", (socket) => {
         }));
 
         // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-        io.emit("actualizarJugadores", { jugadores, nombrePartida });
+        io.emit("actualizarJugadores", { jugadores, nombrePartida, numJugadores: partida.numJugadores });
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
         if (Object.keys(partida.jugadores).length === 0) {
@@ -222,6 +222,16 @@ io.on("connection", (socket) => {
     dejarPartida(socket, nombrePartida);
   });
 });
+
+socket.on("iniciarPartida", (nombrePartida) => {
+  const partida = partidas[nombrePartida];
+  if (partida) {
+      // Aquí puedes añadir la lógica para iniciar la partida
+      // Por ejemplo, barajar las cartas, elegir un jugador inicial, etc.
+      io.emit("partidaIniciada", nombrePartida); // Notificar a todos los jugadores que la partida ha iniciado
+  }
+});
+
 
 // Función para gestionar la salida de un jugador de una partida
 function dejarPartida(socket, nombrePartida) {
