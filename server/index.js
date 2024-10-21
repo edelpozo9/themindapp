@@ -107,7 +107,11 @@ io.on("connection", (socket) => {
         }));
 
         // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-        io.emit("actualizarJugadores", { jugadores, nombrePartida, numJugadores: partida.numJugadores });
+        io.emit("actualizarJugadores", {
+          jugadores,
+          nombrePartida,
+          numJugadores: partida.numJugadores,
+        });
       } else {
         // Verificar si la partida ya está llena
         if (Object.keys(partida.jugadores).length >= partida.numJugadores) {
@@ -120,8 +124,12 @@ io.on("connection", (socket) => {
             userId: userId,
             nombreUsuario: nombreUsuario, // Guardar el nombre del usuario
             vida: 3, // Cada jugador comienza con 3 vidas
+            cartasDelJugadas: [],
             cartasJugadas: [], // Cartas que han jugado
           };
+
+          // Unir al jugador a una sala con su userId
+          socket.join(userId);
 
           // Emitir 'partidaUnida' al jugador que se acaba de unir para redirigirlo a la sala
           socket.emit("partidaUnida", { nombrePartida, nombreUsuario });
@@ -134,7 +142,11 @@ io.on("connection", (socket) => {
           }));
 
           // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-          io.emit("actualizarJugadores", { jugadores, nombrePartida, numJugadores: partida.numJugadores });
+          io.emit("actualizarJugadores", {
+            jugadores,
+            nombrePartida,
+            numJugadores: partida.numJugadores,
+          });
           console.log(
             `Jugador ${userId} (${nombreUsuario}) se unió a la partida: ${nombrePartida}`
           );
@@ -178,17 +190,58 @@ io.on("connection", (socket) => {
   socket.on("dejarPartida", (nombrePartida) => {
     manejarDesconexion(userId, "Usuario dejó la partida"); // Llama a la función de desconexión
   });
-  socket.on("iniciarPartida", (nombrePartida) => {
-    const partida = partidas[nombrePartida];
-    if (partida) {
-        // Aquí puedes añadir la lógica para iniciar la partida
-        // Por ejemplo, barajar las cartas, elegir un jugador inicial, etc.
-        console.log(
-          `PArtida iniciada`
-        );
-        io.emit("partidaIniciada", nombrePartida); // Notificar a todos los jugadores que la partida ha iniciado
+
+ // Evento para iniciar la partida
+socket.on("iniciarPartida", (nombrePartida) => {
+  const partida = partidas[nombrePartida];
+  if (partida) {
+    // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
+    repartirCartas(nombrePartida, partida.estadoJuego.ronda);
+
+    // Notificar que la partida ha iniciado
+    console.log(`Partida iniciada: ${nombrePartida}.`);
+  }
+});
+  
+// Función repartir cartas
+function repartirCartas(nombrePartida, ronda) {
+  const partida = partidas[nombrePartida];
+  if (!partida) {
+    console.log(`No se pudo encontrar la partida: ${nombrePartida}`);
+    return;
+  }
+
+  const jugadores = Object.values(partida.jugadores);
+  const cartasDisponibles = [...CARTAS]; // Hacer una copia del array de cartas
+  const cartasAsignadas = {};
+
+  jugadores.forEach((jugador) => {
+    const cartasJugador = [];
+    for (let i = 0; i < 3; i++) {
+      if (cartasDisponibles.length === 0) break; // Si no hay más cartas, salir del bucle
+      const cartaAleatoria = Math.floor(Math.random() * cartasDisponibles.length);
+      const carta = cartasDisponibles[cartaAleatoria];
+
+      cartasJugador.push(carta); // Almacenar la carta en un array temporal
+      cartasDisponibles.splice(cartaAleatoria, 1); // Eliminar la carta de las disponibles
     }
+
+    // Ordenar las cartas de menor a mayor antes de asignarlas al jugador
+    cartasJugador.sort((a, b) => a - b);
+
+    cartasAsignadas[jugador.userId] = cartasJugador;
+    partida.jugadores[jugador.userId].cartasDelJugadas.push(...cartasJugador); // Agregar las cartas al jugador
   });
+
+  // Emitir las cartas asignadas a cada jugador
+  Object.keys(cartasAsignadas).forEach((userId) => {
+    io.to(userId).emit("asignarCartas", cartasAsignadas[userId]);
+  });
+
+  console.log(`Cartas repartidas de menor a mayor para la ronda ${ronda} en la partida ${nombrePartida}.`);
+}
+
+
 
   // Función para manejar la desconexión de un jugador
   function manejarDesconexion(userId, reason) {
@@ -213,7 +266,11 @@ io.on("connection", (socket) => {
         }));
 
         // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-        io.emit("actualizarJugadores", { jugadores, nombrePartida, numJugadores: partida.numJugadores });
+        io.emit("actualizarJugadores", {
+          jugadores,
+          nombrePartida,
+          numJugadores: partida.numJugadores,
+        });
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
         if (Object.keys(partida.jugadores).length === 0) {
@@ -233,9 +290,6 @@ io.on("connection", (socket) => {
     dejarPartida(socket, nombrePartida);
   });
 });
-
-
-
 
 // Función para gestionar la salida de un jugador de una partida
 function dejarPartida(socket, nombrePartida) {
