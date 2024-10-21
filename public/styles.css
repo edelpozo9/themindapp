@@ -97,3 +97,23 @@ p {
     background-color: #28a745; /* Verde para el botón de iniciar */
     color: white;
 }
+
+/* Estilos específicos para las zonas de partida y cartas */
+.partida-zone {
+    background-color: #ffffff; /* Fondo blanco para la zona de partida */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-bottom: 20px; /* Márgenes para separación */
+}
+
+.cartas-zone {
+    background-color: #ffffff; /* Fondo blanco para la zona de cartas */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-bottom: 20px; /* Márgenes para separación */
+}
+
+/* Ajustar márgenes para los títulos */
+h2 {
+    margin-top: 0; /* Eliminar margen superior para h2 */
+}

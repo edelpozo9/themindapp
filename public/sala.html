@@ -11,20 +11,59 @@
 
 <body class="sala-container">
     <div class="container mt-4">
-        <h1 id="tituloSala" class="sala-title"></h1>
-        <h2>Jugadores en la partida:</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Player ID</th>
-                </tr>
-            </thead>
-            <tbody id="listaJugadores">
-                <!-- La lista de jugadores se llenará aquí -->
-            </tbody>
-        </table>
-        <button id="btnIniciarPartida" class="btn btn-success mt-3" disabled>Iniciar Partida</button>
-        <button id="btnDejarPartida" class="btn btn-leave">Dejar Partida</button>
+        <h1 id="tituloSala" class="sala-title mb-3"></h1>
+        
+        <!-- Zona central para el desarrollo de la partida -->
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <div class="partida-zone border rounded p-3">
+                    <h2 class="mb-3">Zona de Partida</h2>
+                    <!-- Aquí se desarrollará la partida -->
+                    <div id="zonaPartida" class="border rounded p-3">
+                        <!-- Contenido de la partida -->
+                        <p>Aquí va el desarrollo de la partida.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lista de jugadores -->
+            <div class="col-md-4">
+                <div class="border rounded p-3">
+                    <h3 class="mb-3">Jugadores en la partida:</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nombre del jugador</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaJugadores">
+                            <!-- La lista de jugadores se llenará aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zona para las cartas del jugador -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="cartas-zone border rounded p-3">
+                    <h2 class="mb-3">Mis Cartas:</h2>
+                    <div id="zonaCartas">
+                        <!-- Aquí irán las cartas del jugador -->
+                        <p>Aquí se mostrarán las cartas del jugador.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones para iniciar y dejar la partida -->
+        <div class="row mb-3">
+            <div class="col-md-12 text-center">
+                <button id="btnIniciarPartida" class="btn btn-success" disabled>Iniciar Partida</button>
+                <button id="btnDejarPartida" class="btn btn-danger ms-2">Dejar Partida</button>
+            </div>
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
@@ -59,7 +98,7 @@
 
                 jugadores.forEach(jugador => {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${jugador.userId} - ${jugador.nombreUsuario}</td>`; // Mostrar Player ID y nombre de usuario
+                    tr.innerHTML = `<td>${jugador.nombreUsuario}</td>`; // Mostrar Player ID y nombre de usuario
                     listaJugadores.appendChild(tr);
                 });
 
@@ -86,10 +125,9 @@
             window.location.href = 'index.html'; // Redirigir a la página principal
         });
 
-        // Agregar evento al botón para iniciar la partida (solo el evento sin redirección)
+        // Agregar evento al botón para iniciar la partida
         document.getElementById('btnIniciarPartida').addEventListener('click', function () {
             socket.emit('iniciarPartida', nombrePartida); // Emitir evento para iniciar la partida
-            // Aquí puedes añadir más lógica si es necesario, como cambiar el estado del botón o mostrar un mensaje
         });
 
     </script>
