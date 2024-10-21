@@ -66,6 +66,30 @@ io.on("connection", (socket) => {
   // Unirse a la partida
   socket.on("unirsePartida", (nombrePartida, nombreUsuario) => {
     const partida = partidas[nombrePartida];
+
+    // Verificar si el jugador ya está en una partida
+    const partidaActual = Object.values(partidas).find(
+      (partida) => partida.jugadores[userId]
+    );
+    if (partidaActual) {
+      // Si el jugador ya está en una partida
+      const nombrePartidaActual = Object.keys(partidas).find(
+        (partidaName) => partidas[partidaName].jugadores[userId]
+      );
+
+      if (nombrePartidaActual !== nombrePartida) {
+        // Si el nombre de la partida actual es diferente de la que se intenta unir
+        socket.emit(
+          "errorPartida",
+          `Ya estás en la partida: ${nombrePartidaActual}. No puedes unirte a otra.`
+        );
+        console.log(
+          `Jugador ${userId} (${nombreUsuario}) ya está en la partida: ${nombrePartidaActual}`
+        );
+        return; // Salir de la función si ya está en una partida diferente
+      }
+    }
+
     if (partida) {
       // Verificar si el usuario ya está en la partida
       if (partida.jugadores[userId]) {
@@ -126,15 +150,15 @@ io.on("connection", (socket) => {
     let enPartida = false;
     let nombrePartida = "";
 
-     // Buscar en todas las partidas si el usuario está
-     for (const partidaNombre in partidas) {
+    // Buscar en todas las partidas si el usuario está
+    for (const partidaNombre in partidas) {
       const partida = partidas[partidaNombre];
       if (partida.jugadores[userId]) {
-          enPartida = true;
-          nombrePartida = partidaNombre;
-          break;
+        enPartida = true;
+        nombrePartida = partidaNombre;
+        break;
       }
-  }
+    }
 
     if (enPartida) {
       // Emitir evento que indica que ya está en una partida
