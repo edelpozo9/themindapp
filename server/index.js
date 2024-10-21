@@ -142,17 +142,10 @@ io.on("connection", (socket) => {
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
         if (Object.keys(partida.jugadores).length === 0) {
-          // Verificar nuevamente si la partida sigue vacía después de 2 segundos
-          if (Object.keys(partida.jugadores).length === 0) {
             delete partidas[nombrePartida];
             console.log(
-              `Partida ${nombrePartida} eliminada porque no quedaron jugadores después de 1 segundo.`
-            );
-          } else {
-            console.log(
-              `Partida ${nombrePartida} no se eliminó porque hubo reconexión de jugadores.`
-            );
-          }
+              `Partida ${nombrePartida} eliminada porque no quedaron jugadores.`
+            );          
         }
 
         break; // Rompemos el bucle porque ya encontramos y eliminamos al jugador
