@@ -21,7 +21,21 @@ io.on("connection", (socket) => {
 
   // Manejar la creación de una nueva partida
   socket.on("crearPartida", (nombrePartida, numJugadores, nombreUsuario) => {
-    if (partidas[nombrePartida]) {
+    // Verificar si el usuario ya está en alguna partida
+    const partidaExistente = Object.entries(partidas).find(
+      (partida) => partida[1].jugadores[userId] // Verifica si el userId está en la lista de jugadores de la partida
+    );
+
+    if (partidaExistente) {
+      const nombrePartidaExistente = partidaExistente[0]; // Obtiene el nombre de la partida en la que está el usuario
+      socket.emit(
+        "error",
+        `Error al crear la partida. Ya estás en la partida: ${nombrePartidaExistente}. `
+      );
+      console.log(
+        `Error: El usuario ${nombreUsuario} intentó crear una partida mientras está en la partida: ${nombrePartidaExistente}.`
+      );
+    } else if (partidas[nombrePartida]) {
       socket.emit("error", "Ya existe una partida con ese nombre.");
       console.log(
         `Error: Intento de crear una partida ya existente: ${nombrePartida}`
@@ -58,6 +72,8 @@ io.on("connection", (socket) => {
         console.log(
           `El jugador ${userId} (${nombreUsuario}) ya está en la partida: ${nombrePartida}`
         );
+        // Emitir 'partidaUnida' al jugador que se acaba de unir para redirigirlo a la sala
+        socket.emit("partidaUnida", { nombrePartida, nombreUsuario });
 
         // Emitir la lista actualizada de jugadores y el nombre de la partida
         const jugadores = Object.values(partida.jugadores).map((jugador) => ({
@@ -105,6 +121,30 @@ io.on("connection", (socket) => {
     }
   });
 
+  // Evento para verificar si el usuario ya está en una partida
+  socket.on("verificarPartida", () => {
+    let enPartida = false;
+    let nombrePartida = "";
+
+     // Buscar en todas las partidas si el usuario está
+     for (const partidaNombre in partidas) {
+      const partida = partidas[partidaNombre];
+      if (partida.jugadores[userId]) {
+          enPartida = true;
+          nombrePartida = partidaNombre;
+          break;
+      }
+  }
+
+    if (enPartida) {
+      // Emitir evento que indica que ya está en una partida
+      socket.emit("yaEnPartida", nombrePartida);
+    } else {
+      // Emitir evento que indica que no está en ninguna partida
+      socket.emit("noEnPartida");
+    }
+  });
+
   // Evento que se ejecuta cuando un cliente se desconecta
   socket.on("disconnect", (reason) => {
     //manejarDesconexion(userId, reason);
@@ -138,14 +178,14 @@ io.on("connection", (socket) => {
         }));
 
         // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-        io.emit("actualizarJugadores", { jugadores, nombrePartida });      
+        io.emit("actualizarJugadores", { jugadores, nombrePartida });
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
         if (Object.keys(partida.jugadores).length === 0) {
-            delete partidas[nombrePartida];
-            console.log(
-              `Partida ${nombrePartida} eliminada porque no quedaron jugadores.`
-            );          
+          delete partidas[nombrePartida];
+          console.log(
+            `Partida ${nombrePartida} eliminada porque no quedaron jugadores.`
+          );
         }
 
         break; // Rompemos el bucle porque ya encontramos y eliminamos al jugador

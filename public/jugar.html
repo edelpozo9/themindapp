@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div id="header-container"></div> <!-- Contenedor para el encabezado -->
 
     <main class="container mt-4 text-center">
         <h2>¿Cómo quieres jugar?</h2>
-        
+
         <section>
             <p>¿Quieres crear una nueva partida o unirte a una existente?</p>
             <div class="d-flex justify-content-center">
-                <a href="crear_partida.html" class="btn btn-primary btn-lg me-2" id="startGame">Crear una Partida</a>
-                <a href="unirse_partida.html" class="btn btn-secondary btn-lg">Unirse a una Partida</a>
+                <button class="btn btn-primary btn-lg me-2" id="crearPartida">Crear una Partida</button> <!-- Cambiado a botón -->
+                <button class="btn btn-secondary btn-lg" id="unirsePartida">Unirse a una Partida</button>
             </div>
         </section>
     </main>
@@ -42,6 +44,41 @@
                 document.getElementById('footer-container').innerHTML = data;
             })
             .catch(error => console.error('Error al cargar el pie de página:', error));
+
+        // Lógica para crear una nueva partida
+        document.getElementById('crearPartida').addEventListener('click', function () {
+            // Emitir evento para verificar si el usuario ya está en una partida
+            socket.emit('verificarPartida');
+
+            // Manejar la respuesta del servidor
+            socket.on('yaEnPartida', (nombrePartida) => {
+                // Redirigir a la sala de la partida
+                window.location.href = `sala.html?nombre=${nombrePartida}`; // Cambiar esto a la URL de la sala con el nombre
+            });
+
+            socket.on('noEnPartida', () => {
+                // Si no está en una partida, redirigir a la página de crear partida
+                window.location.href = 'crear_partida.html'; // Redirigir a la página para crear una partida
+            });
+        });
+
+        // Lógica para unirse a una partida
+        document.getElementById('unirsePartida').addEventListener('click', function () {
+            // Emitir evento para verificar si el usuario ya está en una partida
+            socket.emit('verificarPartida');
+
+            // Manejar la respuesta del servidor
+            socket.on('yaEnPartida', (nombrePartida) => {
+                // Redirigir a la sala de la partida
+                window.location.href = `sala.html?nombre=${nombrePartida}`; // Cambiar esto a la URL de la sala con el nombre
+            });
+
+            socket.on('noEnPartida', () => {
+                // Si no está en una partida, redirigir a la página de unirse a partida
+                window.location.href = 'unirse_partida.html'; // Redirigir a la página para unirse a una partida
+            });
+        });
     </script>
 </body>
+
 </html>
