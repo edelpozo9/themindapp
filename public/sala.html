@@ -55,6 +55,7 @@
                         <!-- Aquí irán las cartas del jugador -->
                         <p>Carta/s:</p>
                     </div>
+                    <button id="btnJugarCarta" class="btn btn-primary mt-3">Jugar Carta</button>
                 </div>
             </div>
         </div>
@@ -88,28 +89,6 @@
         const nombrePartida = params.nombre;
         const nombreUsuario = localStorage.getItem('nombreUsuario'); // Recuperar el nombreUsuario desde localStorage
 
-        // Actualizar la lista de jugadores cuando se recibe el evento
-        socket.on('actualizarJugadores', ({ jugadores, nombrePartida: nombrePartidaSocket, numJugadores }) => {
-            // Solo actualizar si el nombre de la partida coincide
-            if (nombrePartidaSocket === nombrePartida) {
-                const listaJugadores = document.getElementById('listaJugadores');
-                listaJugadores.innerHTML = ''; // Limpiar la lista antes de agregar
-
-                jugadores.forEach(jugador => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${jugador.nombreUsuario}</td>`; // Mostrar Player ID y nombre de usuario
-                    listaJugadores.appendChild(tr);
-                });
-
-                // Mostrar el número de jugadores y el tamaño de la sala
-                document.getElementById('tituloSala').innerText = `Partida: ${nombrePartida} (Jugadores conectados: ${jugadores.length}/${numJugadores})`;
-
-                // Habilitar el botón "Iniciar Partida" si la sala está completa
-                const btnIniciarPartida = document.getElementById('btnIniciarPartida');
-                btnIniciarPartida.disabled = jugadores.length < numJugadores; // Habilitar si el número de jugadores es igual al tamaño de la sala
-            }
-        });
-
         // Unirse a la partida
         socket.emit('unirsePartida', nombrePartida, nombreUsuario);
 
@@ -118,31 +97,78 @@
             alert(message); // Mostrar un mensaje de error
         });
 
+        // Actualizar la lista de jugadores cuando se recibe el evento
+        socket.on('actualizarJugadores', ({ jugadores, nombrePartida: nombrePartidaSocket, numJugadores }) => {
+            if (nombrePartidaSocket === nombrePartida) {
+                const listaJugadores = document.getElementById('listaJugadores');
+                listaJugadores.innerHTML = '';
+
+                jugadores.forEach(jugador => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${jugador.nombreUsuario}</td>`;
+                    listaJugadores.appendChild(tr);
+                });
+
+                document.getElementById('tituloSala').innerText = `Partida: ${nombrePartida} (Jugadores conectados: ${jugadores.length}/${numJugadores})`;
+                const btnIniciarPartida = document.getElementById('btnIniciarPartida');
+                btnIniciarPartida.disabled = jugadores.length < numJugadores;
+            }
+        });
+
+        // Recibir cartas asignadas
+        socket.on("asignarCartas", (cartas) => {
+            const zonaCartas = document.getElementById("zonaCartas");
+            zonaCartas.innerHTML = `<p>Carta/s: ${cartas.join(', ')}</p>`; // Mostrar las cartas asignadas al jugador
+        });
+
         // Agregar evento al botón para dejar la partida
         document.getElementById('btnDejarPartida').addEventListener('click', function () {
-            socket.emit('dejarPartida', nombrePartida); // Emitir evento para dejar la partida
-            window.location.href = 'index.html'; // Redirigir a la página principal
+            socket.emit('dejarPartida', nombrePartida);
+            window.location.href = 'index.html';
         });
 
         // Agregar evento al botón para iniciar la partida
         document.getElementById('btnIniciarPartida').addEventListener('click', function () {
-            socket.emit('iniciarPartida', nombrePartida); // Emitir evento para iniciar la partida
+            socket.emit('iniciarPartida', nombrePartida);
         });
 
         // Funcionalidad para mostrar/ocultar la lista de jugadores
         document.getElementById('toggleListaJugadores').addEventListener('click', function () {
             const tablaJugadores = document.getElementById('jugadoresTabla');
-            if (tablaJugadores.style.display === 'none') {
-                tablaJugadores.style.display = 'table'; // Mostrar tabla
+            tablaJugadores.style.display = tablaJugadores.style.display === 'none' ? 'table' : 'none';
+        });
+
+        // Lógica para el botón "Jugar Carta"
+        document.getElementById('btnJugarCarta').addEventListener('click', function () {
+            // Obtener las cartas actuales del jugador desde la zona de cartas
+            const zonaCartas = document.getElementById("zonaCartas");
+            const cartasTexto = zonaCartas.textContent.replace('Carta/s: ', '').trim();
+            let cartas = cartasTexto ? cartasTexto.split(', ').map(Number) : [];
+
+            if (cartas.length > 0) {                
+                const cartaJugada = cartas.shift(); // Eliminar la carta más baja
+
+                // Actualizar la zona de cartas con las cartas restantes
+                zonaCartas.innerHTML = `<p>Carta/s: ${cartas.join(', ')}</p>`;
+
+                // Enviar la carta jugada al servidor
+                socket.emit('jugarCarta', { nombrePartida, cartaJugada });
+
             } else {
-                tablaJugadores.style.display = 'none'; // Ocultar tabla
+                alert('No tienes cartas para jugar.');
             }
         });
 
-        // Recibir cartas asignadas
-        socket.on("asignarCartas", (carta) => {
-            const zonaCartas = document.getElementById("zonaCartas");
-            zonaCartas.innerHTML = `<p>Carta/s: ${carta}</p>`; // Muestra la carta asignada al jugador
+        
+        // Recibir el estado actualizado de las cartas jugadas y mostrarlas
+        socket.on('actualizarCartasJugadas', (cartasJugadas) => {
+            const zonaPartida = document.getElementById("zonaPartida");
+            zonaPartida.innerHTML = ''; // Limpiar la zona de la partida antes de mostrar las cartas
+
+            // Mostrar cada carta jugada por cada jugador
+            cartasJugadas.forEach(({ nombreUsuario, carta }) => {
+                zonaPartida.innerHTML += `<p>${nombreUsuario} ha jugado la carta: ${carta}</p>`;
+            });
         });
     </script>
 </body>
