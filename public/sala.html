@@ -29,6 +29,7 @@
             <!-- Lista de jugadores -->
             <div class="col-md-4">
                 <div class="border rounded p-3">
+                    <h2 class="mb-3" id="jugadoresConectados">aaa</h2>
                     <button id="toggleListaJugadores" class="btn btn-secondary mb-3">Lista de Jugadores</button>
                     <div id="jugadoresContainer">
                         <table class="table table-striped" id="jugadoresTabla" style="display: none;">
@@ -111,7 +112,8 @@
                     listaJugadores.appendChild(tr);
                 });
 
-                document.getElementById('tituloSala').innerText = `Partida: ${nombrePartida} (Jugadores conectados: ${jugadores.length}/${numJugadores})`;
+                document.getElementById('tituloSala').innerText = `Partida: ${nombrePartida}`;
+                document.getElementById('jugadoresConectados').innerText = `Jugadores conectados: ${jugadores.length}/${numJugadores}`;
                 const btnIniciarPartida = document.getElementById('btnIniciarPartida');
                 btnIniciarPartida.disabled = jugadores.length < numJugadores;
             }
@@ -144,13 +146,13 @@
                 btnIniciarPartida.style.display = 'inline-block';
                 btnIniciarRonda.style.display = 'none';
                 // Actualizar el título de la sala
-                document.getElementById('zonaRondaPartida').innerText = `Partida: ${nombrePartidaSocket} (No iniciada)`;
+                document.getElementById('zonaRondaPartida').innerText = `Partida no iniciada`;
             } else {
                 // La partida ha comenzado, ocultar el botón de iniciar partida y mostrar el de nueva ronda
                 btnIniciarPartida.style.display = 'none';
                 btnIniciarRonda.style.display = 'inline-block';
                 // Actualizar el título de la sala
-                document.getElementById('zonaRondaPartida').innerText = `Partida: ${nombrePartidaSocket} (Ronda: ${rondaActual - 1})`;
+                document.getElementById('zonaRondaPartida').innerText = `Ronda: ${rondaActual - 1}`;
             }
         });
 
