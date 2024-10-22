@@ -48,6 +48,7 @@ io.on("connection", (socket) => {
           ronda: 0,
           cartasJugadas: [],
           siguienteRonda: false,
+          reiniciarRonda: false,
         },
       };
       // Llamar al socket para unirse a la partida inmediatamente después de crearla
@@ -110,6 +111,7 @@ io.on("connection", (socket) => {
           nombrePartida: nombrePartida,
           rondaActual: partida.estadoJuego.ronda,
           siguienteRonda: partida.estadoJuego.siguienteRonda,
+          reiniciarRonda: partida.estadoJuego.reiniciarRonda,
         });
         // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
         io.to(nombrePartida).emit(
@@ -161,6 +163,7 @@ io.on("connection", (socket) => {
             nombrePartida: nombrePartida,
             rondaActual: partida.estadoJuego.ronda,
             siguienteRonda: partida.estadoJuego.siguienteRonda,
+            reiniciarRonda: partida.estadoJuego.reiniciarRonda,
           });
           // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
           io.to(nombrePartida).emit(
@@ -260,6 +263,7 @@ io.on("connection", (socket) => {
         nombrePartida: nombrePartida,
         rondaActual: rondaActual,
         siguienteRonda: partida.estadoJuego.siguienteRonda,
+        reiniciarRonda: partida.estadoJuego.reiniciarRonda,
       });
 
       console.log(
@@ -290,6 +294,7 @@ io.on("connection", (socket) => {
       nombrePartida: nombrePartida,
       rondaActual: partida.estadoJuego.ronda,
       siguienteRonda: partida.estadoJuego.siguienteRonda,
+      reiniciarRonda: partida.estadoJuego.reiniciarRonda,
     });
 
     // Notificar que la partida ha iniciado
@@ -318,6 +323,35 @@ io.on("connection", (socket) => {
       nombrePartida: nombrePartida,
       rondaActual: partida.estadoJuego.ronda,
       siguienteRonda: partida.estadoJuego.siguienteRonda,
+      reiniciarRonda: partida.estadoJuego.reiniciarRonda,
+    });
+
+    // Notificar que la partida ha iniciado
+    console.log(`Partida iniciada: ${nombrePartida}.`);
+  });
+
+  // Evento para iniciar la partida
+  socket.on("reiniciarRonda", (nombrePartida) => {
+    const partida = partidas[nombrePartida];
+    
+    partida.estadoJuego.reiniciarRonda = false;
+    // Eliminar las cartas jugadas de la partida
+    partida.estadoJuego.cartasJugadas = [];
+
+    // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
+    io.to(nombrePartida).emit(
+      "actualizarCartasJugadas",
+      partida.estadoJuego.cartasJugadas
+    );
+    // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
+    repartirCartas(nombrePartida, partida.estadoJuego.ronda);
+
+    // Emitir el estado de la partida, incluyendo la ronda actual
+    io.to(nombrePartida).emit("estadoPartida", {
+      nombrePartida: nombrePartida,
+      rondaActual: partida.estadoJuego.ronda,
+      siguienteRonda: partida.estadoJuego.siguienteRonda,
+      reiniciarRonda: partida.estadoJuego.reiniciarRonda,
     });
 
     // Notificar que la partida ha iniciado
@@ -398,6 +432,17 @@ io.on("connection", (socket) => {
           jugadores,
           nombrePartida,
           numJugadores: partida.numJugadores,
+        });
+
+        // Modificar el valor de reiniciarRonda en el estado de la partida
+        partida.estadoJuego.reiniciarRonda = true;
+
+        // Emitir el evento de estado de la partida con reiniciarRonda = true
+        io.to(nombrePartida).emit("estadoPartida", {
+          nombrePartida,
+          rondaActual: partida.rondaActual,
+          siguienteRonda: false, // Esto puede depender de tu lógica específica
+          reiniciarRonda: true
         });
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente

@@ -67,6 +67,8 @@
                 <button id="btnIniciarPartida" class="btn btn-success">Iniciar Partida</button>
                 <button id="btnIniciarRonda" class="btn btn-warning ms-2" style="display: none;" disabled>Nueva
                     Ronda</button>
+                <button id="btnReiniciarRonda" class="btn btn-danger ms-2" style="display: none;" disabled>Reiniciar
+                    Ronda</button>
                 <button id="btnDejarPartida" class="btn btn-danger ms-2">Dejar Partida</button>
             </div>
         </div>
@@ -111,6 +113,11 @@
                 document.getElementById('jugadoresConectados').innerText = `Jugadores conectados: ${jugadores.length}/${numJugadores}`;
                 const btnIniciarPartida = document.getElementById('btnIniciarPartida');
                 btnIniciarPartida.disabled = jugadores.length < numJugadores;
+                const btnReiniciarRonda = document.getElementById('btnReiniciarRonda');
+                btnReiniciarRonda.disabled = jugadores.length < numJugadores;
+                const btnJugarCarta = document.getElementById('btnJugarCarta');
+                btnJugarCarta.disabled = jugadores.length < numJugadores;
+
             }
         });
 
@@ -132,33 +139,44 @@
         });
 
         // Escuchar el evento de estado de la partida
-        socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, siguienteRonda }) => {
+        socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, siguienteRonda, reiniciarRonda }) => {
             const btnIniciarPartida = document.getElementById('btnIniciarPartida');
             const btnIniciarRonda = document.getElementById('btnIniciarRonda');
+            const btnReiniciarRonda = document.getElementById('btnReiniciarRonda');
 
-            if (rondaActual === 0) {
+            if (reiniciarRonda) {
+                // Mostrar el botón de reiniciar ronda y ocultar los otros
+                btnReiniciarRonda.style.display = 'inline-block';
+                btnReiniciarRonda.disabled = true;
+                btnIniciarPartida.style.display = 'none';
+                btnIniciarRonda.style.display = 'none';
+            } else if (rondaActual === 0) {
                 // La partida aún no ha comenzado
                 btnIniciarPartida.style.display = 'inline-block';
                 btnIniciarRonda.style.display = 'none';
-                btnIniciarRonda.disabled = true; // Deshabilitar el botón de iniciar ronda por defecto
-                // Actualizar el título de la sala
+                btnIniciarRonda.disabled = true;
+
+                btnReiniciarRonda.style.display = 'none';
+                btnReiniciarRonda.disabled = true;
                 document.getElementById('zonaRondaPartida').innerText = `Partida no iniciada`;
             } else {
-                // La partida ha comenzado, ocultar el botón de iniciar partida y mostrar el de nueva ronda
+                // La partida ha comenzado
                 btnIniciarPartida.style.display = 'none';
                 btnIniciarRonda.style.display = 'inline-block';
-                // Activar o desactivar el botón de "Iniciar Ronda" según el estado de siguienteRonda
-                if (siguienteRonda) {
-                    btnIniciarRonda.disabled = false;
-                } else {
-                    btnIniciarRonda.disabled = true;
-                }
+                btnIniciarRonda.disabled = !siguienteRonda;
 
-                // Actualizar el título de la sala
+                btnReiniciarRonda.style.display = 'none';
+                btnReiniciarRonda.disabled = true;
                 document.getElementById('zonaRondaPartida').innerText = `Ronda: ${rondaActual}`;
             }
-        });
+        }
+        );
 
+        // botón para reiniciar la ronda
+        document.getElementById('btnReiniciarRonda').addEventListener('click', function () {
+            socket.emit('reiniciarRonda', nombrePartida);
+            this.disabled = true; // Deshabilitar el botón hasta que el servidor confirme el reinicio
+        });
 
         // Escuchar el evento de inicio de la partida
         socket.on('partidaIniciada', () => {
