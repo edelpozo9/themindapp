@@ -112,6 +112,12 @@ io.on("connection", (socket) => {
           nombrePartida,
           numJugadores: partida.numJugadores,
         });
+        // Emitir las cartas que ya tiene el jugador
+        const cartasJugador = partida.jugadores[userId].cartasDelJugador;
+        socket.emit("asignarCartas", cartasJugador);
+        console.log(
+          `Cartas emitidas para el jugador ${userId} (${nombreUsuario}) en la partida ${nombrePartida}.`
+        );
       } else {
         // Verificar si la partida ya está llena
         if (Object.keys(partida.jugadores).length >= partida.numJugadores) {
@@ -124,7 +130,7 @@ io.on("connection", (socket) => {
             userId: userId,
             nombreUsuario: nombreUsuario, // Guardar el nombre del usuario
             vida: 3, // Cada jugador comienza con 3 vidas
-            cartasDelJugadas: [],
+            cartasDelJugador: [],
             cartasJugadas: [], // Cartas que han jugado
           };
 
@@ -191,57 +197,62 @@ io.on("connection", (socket) => {
     manejarDesconexion(userId, "Usuario dejó la partida"); // Llama a la función de desconexión
   });
 
- // Evento para iniciar la partida
-socket.on("iniciarPartida", (nombrePartida) => {
-  const partida = partidas[nombrePartida];
-  if (partida) {
-    // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
-    repartirCartas(nombrePartida, partida.estadoJuego.ronda);
+  // Evento para iniciar la partida
+  socket.on("iniciarPartida", (nombrePartida) => {
+    const partida = partidas[nombrePartida];
+    if (partida) {
+      // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
+      repartirCartas(nombrePartida, partida.estadoJuego.ronda);
 
-    // Notificar que la partida ha iniciado
-    console.log(`Partida iniciada: ${nombrePartida}.`);
-  }
-});
-  
-// Función repartir cartas
-function repartirCartas(nombrePartida, ronda) {
-  const partida = partidas[nombrePartida];
-  if (!partida) {
-    console.log(`No se pudo encontrar la partida: ${nombrePartida}`);
-    return;
-  }
+      // Notificar que la partida ha iniciado
+      console.log(`Partida iniciada: ${nombrePartida}.`);
+    }
+  });
 
-  const jugadores = Object.values(partida.jugadores);
-  const cartasDisponibles = [...CARTAS]; // Hacer una copia del array de cartas
-  const cartasAsignadas = {};
-
-  jugadores.forEach((jugador) => {
-    const cartasJugador = [];
-    for (let i = 0; i < 3; i++) {
-      if (cartasDisponibles.length === 0) break; // Si no hay más cartas, salir del bucle
-      const cartaAleatoria = Math.floor(Math.random() * cartasDisponibles.length);
-      const carta = cartasDisponibles[cartaAleatoria];
-
-      cartasJugador.push(carta); // Almacenar la carta en un array temporal
-      cartasDisponibles.splice(cartaAleatoria, 1); // Eliminar la carta de las disponibles
+  // Función repartir cartas
+  function repartirCartas(nombrePartida, ronda) {
+    const partida = partidas[nombrePartida];
+    if (!partida) {
+      console.log(`No se pudo encontrar la partida: ${nombrePartida}`);
+      return;
     }
 
-    // Ordenar las cartas de menor a mayor antes de asignarlas al jugador
-    cartasJugador.sort((a, b) => a - b);
+    const jugadores = Object.values(partida.jugadores);
+    const cartasDisponibles = [...CARTAS]; // Hacer una copia del array de cartas
+    const cartasAsignadas = {};
 
-    cartasAsignadas[jugador.userId] = cartasJugador;
-    partida.jugadores[jugador.userId].cartasDelJugadas.push(...cartasJugador); // Agregar las cartas al jugador
-  });
+    jugadores.forEach((jugador) => {
+      // Eliminar las cartas previas del jugador
+      partida.jugadores[jugador.userId].cartasDelJugador = [];
 
-  // Emitir las cartas asignadas a cada jugador
-  Object.keys(cartasAsignadas).forEach((userId) => {
-    io.to(userId).emit("asignarCartas", cartasAsignadas[userId]);
-  });
+      const cartasJugador = [];
+      for (let i = 0; i < ronda; i++) {
+        if (cartasDisponibles.length === 0) break; // Si no hay más cartas, salir del bucle
+        const cartaAleatoria = Math.floor(
+          Math.random() * cartasDisponibles.length
+        );
+        const carta = cartasDisponibles[cartaAleatoria];
 
-  console.log(`Cartas repartidas de menor a mayor para la ronda ${ronda} en la partida ${nombrePartida}.`);
-}
+        cartasJugador.push(carta); // Almacenar la carta en un array temporal
+        cartasDisponibles.splice(cartaAleatoria, 1); // Eliminar la carta de las disponibles
+      }
 
+      // Ordenar las cartas de menor a mayor antes de asignarlas al jugador
+      cartasJugador.sort((a, b) => a - b);
 
+      cartasAsignadas[jugador.userId] = cartasJugador;
+      partida.jugadores[jugador.userId].cartasDelJugador.push(...cartasJugador); // Agregar las cartas al jugador
+    });
+
+    // Emitir las cartas asignadas a cada jugador
+    Object.keys(cartasAsignadas).forEach((userId) => {
+      io.to(userId).emit("asignarCartas", cartasAsignadas[userId]);
+    });
+
+    console.log(
+      `Cartas repartidas para la ronda ${ronda} en la partida ${nombrePartida}.`
+    );
+  }
 
   // Función para manejar la desconexión de un jugador
   function manejarDesconexion(userId, reason) {
