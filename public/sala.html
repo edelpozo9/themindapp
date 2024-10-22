@@ -148,16 +148,18 @@ socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, s
         btnIniciarRonda.disabled = true; // Deshabilitar el botón de iniciar ronda por defecto
         // Actualizar el título de la sala
         document.getElementById('zonaRondaPartida').innerText = `Partida no iniciada`;
+
+         console.log(`Todos l`);
     } else {
         // La partida ha comenzado, ocultar el botón de iniciar partida y mostrar el de nueva ronda
         btnIniciarPartida.style.display = 'none';
         btnIniciarRonda.style.display = 'inline-block';
-
+        console.log(`Todos l2`);
         // Activar o desactivar el botón de "Iniciar Ronda" según el estado de siguienteRonda
         if (siguienteRonda) {
-            btnIniciarRonda.disabled = false;
+            btnIniciarRonda.disabled = false;console.log(`Todos l3`);
         } else {
-            btnIniciarRonda.disabled = true;
+            btnIniciarRonda.disabled = true;console.log(`Todos l4`);
         }
 
         // Actualizar el título de la sala
@@ -174,11 +176,7 @@ socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, s
             btnIniciarRonda.style.display = 'inline-block';
         });
 
-        // Lógica para habilitar el botón "Iniciar Nueva Ronda"
-        socket.on('habilitarNuevaRonda', () => {
-            const btnIniciarRonda = document.getElementById('btnIniciarRonda');
-            btnIniciarRonda.disabled = false;
-        });
+       
 
         // Evento para el botón "Iniciar Nueva Ronda"
         document.getElementById('btnIniciarRonda').addEventListener('click', function () {
