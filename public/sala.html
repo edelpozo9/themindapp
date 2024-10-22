@@ -141,7 +141,7 @@ socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, s
     const btnIniciarPartida = document.getElementById('btnIniciarPartida');
     const btnIniciarRonda = document.getElementById('btnIniciarRonda');
 
-    if (rondaActual === 1) {
+    if (rondaActual === 0) {
         // La partida aún no ha comenzado
         btnIniciarPartida.style.display = 'inline-block';
         btnIniciarRonda.style.display = 'none';
@@ -163,7 +163,7 @@ socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, s
         }
 
         // Actualizar el título de la sala
-        document.getElementById('zonaRondaPartida').innerText = `Ronda: ${rondaActual - 1}`;
+        document.getElementById('zonaRondaPartida').innerText = `Ronda: ${rondaActual}`;
     }
 });
 
