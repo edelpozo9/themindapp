@@ -99,6 +99,9 @@ io.on("connection", (socket) => {
         // Emitir 'partidaUnida' al jugador que se acaba de unir para redirigirlo a la sala
         socket.emit("partidaUnida", { nombrePartida, nombreUsuario });
 
+        // Unir al jugador a una sala con su userId
+        socket.join(userId);
+        
         // Emitir la lista actualizada de jugadores y el nombre de la partida
         const jugadores = Object.values(partida.jugadores).map((jugador) => ({
           userId: jugador.userId,
