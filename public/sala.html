@@ -17,7 +17,7 @@
         <div class="row mb-3">
             <div class="col-md-8">
                 <div class="partida-zone border rounded p-3">
-                    <h2 class="mb-3">Zona de Partida</h2>
+                    <h2 class="mb-3" id="zonaRondaPartida">Partida</h2>
                     <!-- Aquí se desarrollará la partida -->
                     <div id="zonaPartida" class="border rounded p-3">
                         <!-- Contenido de la partida -->
@@ -63,7 +63,9 @@
         <!-- Botones para iniciar y dejar la partida -->
         <div class="row mb-3">
             <div class="col-md-12 text-center">
-                <button id="btnIniciarPartida" class="btn btn-success" disabled>Iniciar Partida</button>
+                <button id="btnIniciarPartida" class="btn btn-success">Iniciar Partida</button>
+                <button id="btnIniciarRonda" class="btn btn-warning ms-2" style="display: none;" disabled>Nueva
+                    Ronda</button>
                 <button id="btnDejarPartida" class="btn btn-danger ms-2">Dejar Partida</button>
             </div>
         </div>
@@ -132,6 +134,46 @@
             socket.emit('iniciarPartida', nombrePartida);
         });
 
+        // Escuchar el evento de estado de la partida
+        socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual }) => {
+            const btnIniciarPartida = document.getElementById('btnIniciarPartida');
+            const btnIniciarRonda = document.getElementById('btnIniciarRonda');
+            console.log(`botons: ${nombrePartida} - ${rondaActual}`);
+            if (rondaActual === 1) {
+                // La partida aún no ha comenzado
+                btnIniciarPartida.style.display = 'inline-block';
+                btnIniciarRonda.style.display = 'none';
+                // Actualizar el título de la sala
+                document.getElementById('zonaRondaPartida').innerText = `Partida: ${nombrePartidaSocket} (No iniciada)`;
+            } else {
+                // La partida ha comenzado, ocultar el botón de iniciar partida y mostrar el de nueva ronda
+                btnIniciarPartida.style.display = 'none';
+                btnIniciarRonda.style.display = 'inline-block';
+                // Actualizar el título de la sala
+                document.getElementById('zonaRondaPartida').innerText = `Partida: ${nombrePartidaSocket} (Ronda: ${rondaActual - 1})`;
+            }
+        });
+
+        // Escuchar el evento de inicio de la partida
+        socket.on('partidaIniciada', () => {
+            // Ocultar el botón "Iniciar Partida" y mostrar "Iniciar Nueva Ronda"
+            document.getElementById('btnIniciarPartida').style.display = 'none';
+            const btnIniciarRonda = document.getElementById('btnIniciarRonda');
+            btnIniciarRonda.style.display = 'inline-block';
+        });
+
+        // Lógica para habilitar el botón "Iniciar Nueva Ronda"
+        socket.on('habilitarNuevaRonda', () => {
+            const btnIniciarRonda = document.getElementById('btnIniciarRonda');
+            btnIniciarRonda.disabled = false;
+        });
+
+        // Evento para el botón "Iniciar Nueva Ronda"
+        document.getElementById('btnIniciarRonda').addEventListener('click', function () {
+            socket.emit('iniciarNuevaRonda', nombrePartida);
+            this.disabled = true; // Deshabilitar de nuevo hasta que todos jueguen
+        });
+
         // Funcionalidad para mostrar/ocultar la lista de jugadores
         document.getElementById('toggleListaJugadores').addEventListener('click', function () {
             const tablaJugadores = document.getElementById('jugadoresTabla');
@@ -140,26 +182,19 @@
 
         // Lógica para el botón "Jugar Carta"
         document.getElementById('btnJugarCarta').addEventListener('click', function () {
-            // Obtener las cartas actuales del jugador desde la zona de cartas
             const zonaCartas = document.getElementById("zonaCartas");
             const cartasTexto = zonaCartas.textContent.replace('Carta/s: ', '').trim();
             let cartas = cartasTexto ? cartasTexto.split(', ').map(Number) : [];
 
-            if (cartas.length > 0) {                
-                const cartaJugada = cartas.shift(); // Eliminar la carta más baja
-
-                // Actualizar la zona de cartas con las cartas restantes
+            if (cartas.length > 0) {
+                const cartaJugada = cartas.shift();
                 zonaCartas.innerHTML = `<p>Carta/s: ${cartas.join(', ')}</p>`;
-
-                // Enviar la carta jugada al servidor
                 socket.emit('jugarCarta', { nombrePartida, cartaJugada });
-
             } else {
                 alert('No tienes cartas para jugar.');
             }
         });
 
-        
         // Recibir el estado actualizado de las cartas jugadas y mostrarlas
         socket.on('actualizarCartasJugadas', (cartasJugadas) => {
             const zonaPartida = document.getElementById("zonaPartida");

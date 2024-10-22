@@ -104,6 +104,17 @@ io.on("connection", (socket) => {
         socket.join(userId);
         socket.join(nombrePartida);
 
+        // Emitir el estado de la partida, incluyendo la ronda actual
+        io.to(nombrePartida).emit("estadoPartida", {
+          nombrePartida: nombrePartida,
+          rondaActual: partida.estadoJuego.ronda,
+        });
+        // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
+        io.to(nombrePartida).emit(
+          "actualizarCartasJugadas",
+          partida.estadoJuego.cartasJugadas
+        );
+
         // Emitir la lista actualizada de jugadores y el nombre de la partida
         const jugadores = Object.values(partida.jugadores).map((jugador) => ({
           userId: jugador.userId,
@@ -143,6 +154,16 @@ io.on("connection", (socket) => {
           socket.join(userId);
           socket.join(nombrePartida);
 
+          // Emitir el estado de la partida, incluyendo la ronda actual
+          io.to(nombrePartida).emit("estadoPartida", {
+            nombrePartida: nombrePartida,
+            rondaActual: partida.estadoJuego.ronda,
+          });
+          // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
+          io.to(nombrePartida).emit(
+            "actualizarCartasJugadas",
+            partida.estadoJuego.cartasJugadas
+          );
           // Emitir 'partidaUnida' al jugador que se acaba de unir para redirigirlo a la sala
           socket.emit("partidaUnida", { nombrePartida, nombreUsuario });
 
@@ -236,13 +257,17 @@ io.on("connection", (socket) => {
   // Evento para iniciar la partida
   socket.on("iniciarPartida", (nombrePartida) => {
     const partida = partidas[nombrePartida];
-    if (partida) {
-      // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
-      repartirCartas(nombrePartida, partida.estadoJuego.ronda);
+    // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
+    repartirCartas(nombrePartida, partida.estadoJuego.ronda);
 
-      // Notificar que la partida ha iniciado
-      console.log(`Partida iniciada: ${nombrePartida}.`);
-    }
+    // Emitir el estado de la partida, incluyendo la ronda actual
+    io.to(nombrePartida).emit("estadoPartida", {
+      nombrePartida: nombrePartida,
+      rondaActual: partida.estadoJuego.ronda,
+    });
+
+    // Notificar que la partida ha iniciado
+    console.log(`Partida iniciada: ${nombrePartida}.`);
   });
 
   // Función repartir cartas
@@ -262,7 +287,7 @@ io.on("connection", (socket) => {
       partida.jugadores[jugador.userId].cartasDelJugador = [];
 
       const cartasJugador = [];
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < ronda; i++) {
         if (cartasDisponibles.length === 0) break; // Si no hay más cartas, salir del bucle
         const cartaAleatoria = Math.floor(
           Math.random() * cartasDisponibles.length
@@ -280,6 +305,9 @@ io.on("connection", (socket) => {
       partida.jugadores[jugador.userId].cartasDelJugador.push(...cartasJugador); // Agregar las cartas al jugador
     });
 
+    // Aumentar la ronda después de repartir las cartas
+    partida.estadoJuego.ronda += 1; // Aumentar la ronda en uno
+
     // Emitir las cartas asignadas a cada jugador
     Object.keys(cartasAsignadas).forEach((userId) => {
       io.to(userId).emit("asignarCartas", cartasAsignadas[userId]);
@@ -289,7 +317,7 @@ io.on("connection", (socket) => {
       `Cartas repartidas para la ronda ${ronda} en la partida ${nombrePartida}.`
     );
   }
-  
+
   // Manejar el evento de dejar la partida
   socket.on("dejarPartida", (nombrePartida) => {
     manejarDesconexion(userId, "Usuario dejó la partida"); // Llama a la función de desconexión
@@ -336,9 +364,7 @@ io.on("connection", (socket) => {
       }
     }
   }
- 
 });
-
 
 // Levantar el servidor en el puerto 3000
 const PORT = 3000;
