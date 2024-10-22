@@ -47,6 +47,7 @@ io.on("connection", (socket) => {
         estadoJuego: {
           ronda: 1,
           cartasJugadas: [],
+          siguienteRonda: false,
         },
       };
       // Llamar al socket para unirse a la partida inmediatamente después de crearla
@@ -108,6 +109,7 @@ io.on("connection", (socket) => {
         io.to(nombrePartida).emit("estadoPartida", {
           nombrePartida: nombrePartida,
           rondaActual: partida.estadoJuego.ronda,
+          siguienteRonda: partida.estadoJuego.siguienteRonda,
         });
         // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
         io.to(nombrePartida).emit(
@@ -158,6 +160,7 @@ io.on("connection", (socket) => {
           io.to(nombrePartida).emit("estadoPartida", {
             nombrePartida: nombrePartida,
             rondaActual: partida.estadoJuego.ronda,
+            siguienteRonda: partida.estadoJuego.siguienteRonda,
           });
           // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
           io.to(nombrePartida).emit(
@@ -238,11 +241,30 @@ io.on("connection", (socket) => {
       carta: cartaJugada,
     });
 
-    // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
+    // Emitir 'cartasJugadas' a todos los jugadores de la partida
     io.to(nombrePartida).emit(
       "actualizarCartasJugadas",
       partida.estadoJuego.cartasJugadas
     );
+
+     // Verificar si se han jugado todas las cartas necesarias para la ronda actual
+     const numJugadores = partida.numJugadores;
+     const rondaActual = partida.estadoJuego.ronda - 1;
+     const cartasRequeridas = numJugadores * rondaActual;
+     if (partida.estadoJuego.cartasJugadas.length === cartasRequeridas) {
+         // Si se han jugado todas las cartas, permitir la siguiente ronda
+         partida.estadoJuego.siguienteRonda = true;
+ 
+         // Emitir el estado de la partida actualizado a todos los jugadores
+         io.to(nombrePartida).emit("estadoPartida", {
+             nombrePartida: nombrePartida,
+             rondaActual: rondaActual,
+             siguienteRonda: partida.estadoJuego.siguienteRonda,
+         });
+
+       
+         console.log(`Todos los jugadores han jugado sus cartas en la ronda ${rondaActual} de la partida: ${nombrePartida}. Se habilita la siguiente ronda.`);
+     }
 
     console.log(
       `El jugador ${jugador.nombreUsuario} jugó la carta ${cartaJugada} en la partida: ${nombrePartida}`
@@ -264,6 +286,33 @@ io.on("connection", (socket) => {
     io.to(nombrePartida).emit("estadoPartida", {
       nombrePartida: nombrePartida,
       rondaActual: partida.estadoJuego.ronda,
+      siguienteRonda: partida.estadoJuego.siguienteRonda,
+    });
+
+    // Notificar que la partida ha iniciado
+    console.log(`Partida iniciada: ${nombrePartida}.`);
+  });
+
+   // Evento para iniciar la partida
+   socket.on("iniciarNuevaRonda", (nombrePartida) => {
+    const partida = partidas[nombrePartida];
+      
+    // Eliminar las cartas jugadas de la partida
+      partida.estadoJuego.cartasJugadas = [];
+ 
+      // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
+      io.to(nombrePartida).emit(
+        "actualizarCartasJugadas",
+        partida.estadoJuego.cartasJugadas
+      );
+    // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
+    repartirCartas(nombrePartida, partida.estadoJuego.ronda);
+
+    // Emitir el estado de la partida, incluyendo la ronda actual
+    io.to(nombrePartida).emit("estadoPartida", {
+      nombrePartida: nombrePartida,
+      rondaActual: partida.estadoJuego.ronda,
+      siguienteRonda: partida.estadoJuego.siguienteRonda,
     });
 
     // Notificar que la partida ha iniciado
@@ -307,6 +356,8 @@ io.on("connection", (socket) => {
 
     // Aumentar la ronda después de repartir las cartas
     partida.estadoJuego.ronda += 1; // Aumentar la ronda en uno
+
+    partida.estadoJuego.siguienteRonda = false;
 
     // Emitir las cartas asignadas a cada jugador
     Object.keys(cartasAsignadas).forEach((userId) => {

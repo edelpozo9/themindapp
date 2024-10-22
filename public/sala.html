@@ -137,24 +137,34 @@
         });
 
         // Escuchar el evento de estado de la partida
-        socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual }) => {
-            const btnIniciarPartida = document.getElementById('btnIniciarPartida');
-            const btnIniciarRonda = document.getElementById('btnIniciarRonda');
-            console.log(`botons: ${nombrePartida} - ${rondaActual}`);
-            if (rondaActual === 1) {
-                // La partida aún no ha comenzado
-                btnIniciarPartida.style.display = 'inline-block';
-                btnIniciarRonda.style.display = 'none';
-                // Actualizar el título de la sala
-                document.getElementById('zonaRondaPartida').innerText = `Partida no iniciada`;
-            } else {
-                // La partida ha comenzado, ocultar el botón de iniciar partida y mostrar el de nueva ronda
-                btnIniciarPartida.style.display = 'none';
-                btnIniciarRonda.style.display = 'inline-block';
-                // Actualizar el título de la sala
-                document.getElementById('zonaRondaPartida').innerText = `Ronda: ${rondaActual - 1}`;
-            }
-        });
+socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, siguienteRonda }) => {
+    const btnIniciarPartida = document.getElementById('btnIniciarPartida');
+    const btnIniciarRonda = document.getElementById('btnIniciarRonda');
+
+    if (rondaActual === 1) {
+        // La partida aún no ha comenzado
+        btnIniciarPartida.style.display = 'inline-block';
+        btnIniciarRonda.style.display = 'none';
+        btnIniciarRonda.disabled = true; // Deshabilitar el botón de iniciar ronda por defecto
+        // Actualizar el título de la sala
+        document.getElementById('zonaRondaPartida').innerText = `Partida no iniciada`;
+    } else {
+        // La partida ha comenzado, ocultar el botón de iniciar partida y mostrar el de nueva ronda
+        btnIniciarPartida.style.display = 'none';
+        btnIniciarRonda.style.display = 'inline-block';
+
+        // Activar o desactivar el botón de "Iniciar Ronda" según el estado de siguienteRonda
+        if (siguienteRonda) {
+            btnIniciarRonda.disabled = false;
+        } else {
+            btnIniciarRonda.disabled = true;
+        }
+
+        // Actualizar el título de la sala
+        document.getElementById('zonaRondaPartida').innerText = `Ronda: ${rondaActual - 1}`;
+    }
+});
+
 
         // Escuchar el evento de inicio de la partida
         socket.on('partidaIniciada', () => {
