@@ -48,11 +48,30 @@
                 </form>
             </div>
         </div>
+
     </main>
 
     <div id="footer-container"></div> <!-- Contenedor para el pie de página -->
-
+    
+    <!-- Modal de Alerta -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">!Error¡</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="errorModalMessage">
+                    <!-- Aquí irá el mensaje de error -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
     <script>
 
@@ -94,12 +113,15 @@
 
             // Redirigir a la sala de la partida
             window.location.href = `sala.html?nombre=${data.nombrePartida}`; // Cambia esto a la URL de la sala con el nombre
-            
+
         });
 
-        // Manejar el evento de error
-        socket.on('error', (message) => {
-            alert(message); // Mostrar mensaje de error
+        socket.on("errorCrearPartida", ({ mensaje }) => {
+            // Establecer el mensaje en el cuerpo del modal
+            document.getElementById('errorModalMessage').innerText = mensaje;
+            // Mostrar el modal de error
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
         });
     </script>
 </body>

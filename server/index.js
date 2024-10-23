@@ -29,18 +29,13 @@ io.on("connection", (socket) => {
 
     if (partidaExistente) {
       const nombrePartidaExistente = partidaExistente[0]; // Obtiene el nombre de la partida en la que está el usuario
-      socket.emit(
-        "error",
-        `Error al crear la partida. Ya estás en la partida: ${nombrePartidaExistente}. `
-      );
-      console.log(
-        `Error: El usuario ${nombreUsuario} intentó crear una partida mientras está en la partida: ${nombrePartidaExistente}.`
-      );
+      socket.emit("errorCrearPartida", {
+        mensaje: `Error al crear la partida. Ya estás en la partida: ${nombrePartidaExistente}. `,
+      });
     } else if (partidas[nombrePartida]) {
-      socket.emit("error", "Ya existe una partida con ese nombre.");
-      console.log(
-        `Error: Intento de crear una partida ya existente: ${nombrePartida}`
-      );
+      socket.emit("errorCrearPartida", {
+        mensaje: "Ya existe una partida con ese nombre.",
+      });
     } else {
       partidas[nombrePartida] = {
         numJugadores,
@@ -83,10 +78,9 @@ io.on("connection", (socket) => {
 
       if (nombrePartidaActual !== nombrePartida) {
         // Si el nombre de la partida actual es diferente de la que se intenta unir
-        socket.emit(
-          "errorPartida",
-          `Ya estás en la partida: ${nombrePartidaActual}. No puedes unirte a otra.`
-        );
+        socket.emit("errorUnirsePartida", {
+          mensaje: `Ya estás en la partida: ${nombrePartidaActual}. No puedes unirte a otra.`,
+        });
         console.log(
           `Jugador ${userId} (${nombreUsuario}) ya está en la partida: ${nombrePartidaActual}`
         );
@@ -143,7 +137,9 @@ io.on("connection", (socket) => {
       } else {
         // Verificar si la partida ya está llena
         if (Object.keys(partida.jugadores).length >= partida.numJugadores) {
-          socket.emit("errorPartida", "La partida ya está llena.");
+          socket.emit("errorUnirsePartida", {
+            mensaje: "La partida ya está llena.",
+          });
           console.log(
             `Jugador ${userId} intentó unirse a una partida llena: ${nombrePartida}`
           );
@@ -201,7 +197,9 @@ io.on("connection", (socket) => {
         }
       }
     } else {
-      socket.emit("errorPartida", "La partida no existe.");
+      socket.emit("errorUnirsePartida", {
+        mensaje: "La partida no existe.",
+      });
     }
   });
 
@@ -235,42 +233,45 @@ io.on("connection", (socket) => {
     const jugador = partida.jugadores[userId];
 
     if (!partida || !jugador) {
-      socket.emit("errorJugarCarta", { mensaje: "Error: Partida o jugador no encontrado." });
       return;
     }
     // Verificar que la carta jugada sea válida (es mayor que las ya jugadas)
-  const cartasJugadas = partida.estadoJuego.cartasJugadas;
-  const ultimaCartaJugada = cartasJugadas.length > 0 ? Math.max(...cartasJugadas.map(c => c.carta)) : -Infinity;
+    const cartasJugadas = partida.estadoJuego.cartasJugadas;
+    const ultimaCartaJugada =
+      cartasJugadas.length > 0
+        ? Math.max(...cartasJugadas.map((c) => c.carta))
+        : -Infinity;
 
-  if (cartaJugada <= ultimaCartaJugada) {
-    // Emitir un error a todos los jugadores si la carta no es válida
-    io.to(nombrePartida).emit("errorJugarCarta", {
-      mensaje: `La carta ${cartaJugada} jugada por ${jugador.nombreUsuario} no es válida. Debe ser mayor que ${ultimaCartaJugada}.`,
-    });
-    partida.estadoJuego.reiniciarRonda = true;
-    //Emitir el estado de la partida
-    io.to(nombrePartida).emit("estadoPartida", {
-      nombrePartida: nombrePartida,
-      rondaActual: partida.estadoJuego.ronda,
-      siguienteRonda: partida.estadoJuego.siguienteRonda,
-      reiniciarRonda:  partida.estadoJuego.reiniciarRonda,
-    });
-     // Emitir la lista actualizada de jugadores y el nombre de la partida
-     const jugadores = Object.values(partida.jugadores).map((jugador) => ({
-      userId: jugador.userId,
-      nombreUsuario: jugador.nombreUsuario,
-      vidas: jugador.vida,
-    }));
+    if (cartaJugada <= ultimaCartaJugada) {
+      // Emitir un error a todos los jugadores si la carta no es válida
+      io.to(nombrePartida).emit("errorJugarCarta", {
+        mensaje: `La carta ${cartaJugada} jugada por ${jugador.nombreUsuario} ha sido jugada en orden incorrecto.
+      Volved a intentarlo.`,
+      });
+      partida.estadoJuego.reiniciarRonda = true;
+      //Emitir el estado de la partida
+      io.to(nombrePartida).emit("estadoPartida", {
+        nombrePartida: nombrePartida,
+        rondaActual: partida.estadoJuego.ronda,
+        siguienteRonda: partida.estadoJuego.siguienteRonda,
+        reiniciarRonda: partida.estadoJuego.reiniciarRonda,
+      });
+      // Emitir la lista actualizada de jugadores y el nombre de la partida
+      const jugadores = Object.values(partida.jugadores).map((jugador) => ({
+        userId: jugador.userId,
+        nombreUsuario: jugador.nombreUsuario,
+        vidas: jugador.vida,
+      }));
 
-    // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-    io.emit("actualizarJugadores", {
-      jugadores,
-      nombrePartida,
-      numJugadores: partida.numJugadores,
-      reiniciarRonda: partida.estadoJuego.reiniciarRonda,
-    });
-    return;
-  }
+      // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
+      io.emit("actualizarJugadores", {
+        jugadores,
+        nombrePartida,
+        numJugadores: partida.numJugadores,
+        reiniciarRonda: partida.estadoJuego.reiniciarRonda,
+      });
+      return;
+    }
 
     // Remover la carta jugada del jugador
     const cartaIndex = jugador.cartasDelJugador.indexOf(cartaJugada);
@@ -307,10 +308,9 @@ io.on("connection", (socket) => {
         reiniciarRonda: partida.estadoJuego.reiniciarRonda,
       });
 
-      console.log(
-        `Todos los jugadores han jugado sus cartas en la ronda ${rondaActual} de la partida: ${nombrePartida}. Se habilita la siguiente ronda.`
-      );
-      
+      io.to(nombrePartida).emit("rondaSuperada", {
+        mensaje: `Avanzad a la siguiente ronda.`,
+      });
     }
 
     console.log(
@@ -516,7 +516,7 @@ io.on("connection", (socket) => {
           nombrePartida,
           rondaActual: partida.rondaActual,
           siguienteRonda: false, // Esto puede depender de tu lógica específica
-          reiniciarRonda: true
+          reiniciarRonda: true,
         });
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
