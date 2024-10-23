@@ -493,6 +493,7 @@ io.on("connection", (socket) => {
           `Jugador ${userId} eliminado de la partida ${nombrePartida}`
         );
 
+        
         // Emitir la lista actualizada de jugadores y el nombre de la partida
         const jugadores = Object.values(partida.jugadores).map((jugador) => ({
           userId: jugador.userId,
@@ -500,15 +501,12 @@ io.on("connection", (socket) => {
           vidas: jugador.vida,
         }));
 
-        // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-        io.emit("actualizarJugadores", {
-          jugadores,
-          nombrePartida,
-          numJugadores: partida.numJugadores,
-          reiniciarRonda: partida.estadoJuego.reiniciarRonda,
-        });
+        if(partida.estadoJuego.ronda > 0){
+          io.emit("dejarPartida", {
+            mensaje: `Completad la sala para reiniciar la ronda`,
+          });
 
-        // Modificar el valor de reiniciarRonda en el estado de la partida
+          // Modificar el valor de reiniciarRonda en el estado de la partida
         partida.estadoJuego.reiniciarRonda = true;
 
         // Emitir el evento de estado de la partida con reiniciarRonda = true
@@ -518,6 +516,18 @@ io.on("connection", (socket) => {
           siguienteRonda: false, // Esto puede depender de tu lógica específica
           reiniciarRonda: true,
         });
+        }
+       
+
+        // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
+        io.emit("actualizarJugadores", {
+          jugadores,
+          nombrePartida,
+          numJugadores: partida.numJugadores,
+          reiniciarRonda: partida.estadoJuego.reiniciarRonda,
+        });
+
+        
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
         if (Object.keys(partida.jugadores).length === 0) {

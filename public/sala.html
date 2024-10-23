@@ -392,6 +392,17 @@
             const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
             errorModal.show();
         });
+
+        socket.on("dejarPartida", ({ mensaje }) => {
+            // Establecer el mensaje en el cuerpo del modal
+            document.getElementById('errorModalMessage').innerText = mensaje;
+            document.getElementById('errorModalLabel').innerText = 'Un jugador ha dejado la partida';
+            // Mostrar el modal de error
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        });
+
+        
     </script>
 </body>
 
