@@ -131,6 +131,7 @@ io.on("connection", (socket) => {
           jugadores,
           nombrePartida,
           numJugadores: partida.numJugadores,
+          reiniciarRonda: partida.estadoJuego.reiniciarRonda,
         });
         // Emitir las cartas que ya tiene el jugador
         const cartasJugador = partida.jugadores[userId].cartasDelJugador;
@@ -185,6 +186,7 @@ io.on("connection", (socket) => {
             jugadores,
             nombrePartida,
             numJugadores: partida.numJugadores,
+            reiniciarRonda: partida.estadoJuego.reiniciarRonda,
           });
           // Emitir las cartas que ya tiene el jugador
           const cartasJugador = partida.jugadores[userId].cartasDelJugador;
@@ -333,8 +335,23 @@ io.on("connection", (socket) => {
   // Evento para iniciar la partida
   socket.on("reiniciarRonda", (nombrePartida) => {
     const partida = partidas[nombrePartida];
-    
+
     partida.estadoJuego.reiniciarRonda = false;
+    
+    // Emitir la lista actualizada de jugadores y el nombre de la partida
+    const jugadores = Object.values(partida.jugadores).map((jugador) => ({
+      userId: jugador.userId,
+      nombreUsuario: jugador.nombreUsuario,
+      vidas: jugador.vida,
+    }));
+
+    // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
+    io.emit("actualizarJugadores", {
+      jugadores,
+      nombrePartida,
+      numJugadores: partida.numJugadores,
+      reiniciarRonda: partida.estadoJuego.reiniciarRonda,
+    });
     // Eliminar las cartas jugadas de la partida
     partida.estadoJuego.cartasJugadas = [];
 
@@ -432,6 +449,7 @@ io.on("connection", (socket) => {
           jugadores,
           nombrePartida,
           numJugadores: partida.numJugadores,
+          reiniciarRonda: partida.estadoJuego.reiniciarRonda,
         });
 
         // Modificar el valor de reiniciarRonda en el estado de la partida

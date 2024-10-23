@@ -98,7 +98,7 @@
         socket.emit('unirsePartida', nombrePartida, nombreUsuario);
 
         // Actualizar la lista de jugadores cuando se recibe el evento
-        socket.on('actualizarJugadores', ({ jugadores, nombrePartida: nombrePartidaSocket, numJugadores }) => {
+        socket.on('actualizarJugadores', ({ jugadores, nombrePartida: nombrePartidaSocket, numJugadores, reiniciarRonda }) => {
             if (nombrePartidaSocket === nombrePartida) {
                 const listaJugadores = document.getElementById('listaJugadores');
                 listaJugadores.innerHTML = '';
@@ -118,6 +118,9 @@
                 const btnJugarCarta = document.getElementById('btnJugarCarta');
                 btnJugarCarta.disabled = jugadores.length < numJugadores;
 
+                if(reiniciarRonda){
+                    btnJugarCarta.disabled = true;
+                }
             }
         });
 
@@ -143,7 +146,7 @@
             const btnIniciarPartida = document.getElementById('btnIniciarPartida');
             const btnIniciarRonda = document.getElementById('btnIniciarRonda');
             const btnReiniciarRonda = document.getElementById('btnReiniciarRonda');
-
+            
             if (reiniciarRonda) {
                 // Mostrar el botón de reiniciar ronda y ocultar los otros
                 btnReiniciarRonda.style.display = 'inline-block';
