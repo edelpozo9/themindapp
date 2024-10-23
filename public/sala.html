@@ -118,7 +118,7 @@
                 const btnJugarCarta = document.getElementById('btnJugarCarta');
                 btnJugarCarta.disabled = jugadores.length < numJugadores;
 
-                if(reiniciarRonda){
+                if (reiniciarRonda) {
                     btnJugarCarta.disabled = true;
                 }
             }
@@ -146,7 +146,7 @@
             const btnIniciarPartida = document.getElementById('btnIniciarPartida');
             const btnIniciarRonda = document.getElementById('btnIniciarRonda');
             const btnReiniciarRonda = document.getElementById('btnReiniciarRonda');
-            
+
             if (reiniciarRonda) {
                 // Mostrar el botón de reiniciar ronda y ocultar los otros
                 btnReiniciarRonda.style.display = 'inline-block';
@@ -227,6 +227,10 @@
             cartasJugadas.forEach(({ nombreUsuario, carta }) => {
                 zonaPartida.innerHTML += `<p>${nombreUsuario} ha jugado la carta: ${carta}</p>`;
             });
+        });
+
+        socket.on("errorJugarCarta", ({ mensaje }) => {
+            alert(mensaje); // Mostrar el mensaje de error al usuario
         });
     </script>
 </body>

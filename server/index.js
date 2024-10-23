@@ -233,6 +233,44 @@ io.on("connection", (socket) => {
     const partida = partidas[nombrePartida];
     const jugador = partida.jugadores[userId];
 
+    if (!partida || !jugador) {
+      socket.emit("errorJugarCarta", { mensaje: "Error: Partida o jugador no encontrado." });
+      return;
+    }
+    // Verificar que la carta jugada sea válida (es mayor que las ya jugadas)
+  const cartasJugadas = partida.estadoJuego.cartasJugadas;
+  const ultimaCartaJugada = cartasJugadas.length > 0 ? Math.max(...cartasJugadas.map(c => c.carta)) : -Infinity;
+
+  if (cartaJugada <= ultimaCartaJugada) {
+    // Emitir un error a todos los jugadores si la carta no es válida
+    io.to(nombrePartida).emit("errorJugarCarta", {
+      mensaje: `La carta ${cartaJugada} jugada por ${jugador.nombreUsuario} no es válida. Debe ser mayor que ${ultimaCartaJugada}.`,
+    });
+    partida.estadoJuego.reiniciarRonda = true;
+    //Emitir el estado de la partida
+    io.to(nombrePartida).emit("estadoPartida", {
+      nombrePartida: nombrePartida,
+      rondaActual: partida.estadoJuego.ronda,
+      siguienteRonda: partida.estadoJuego.siguienteRonda,
+      reiniciarRonda:  partida.estadoJuego.reiniciarRonda,
+    });
+     // Emitir la lista actualizada de jugadores y el nombre de la partida
+     const jugadores = Object.values(partida.jugadores).map((jugador) => ({
+      userId: jugador.userId,
+      nombreUsuario: jugador.nombreUsuario,
+      vidas: jugador.vida,
+    }));
+
+    // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
+    io.emit("actualizarJugadores", {
+      jugadores,
+      nombrePartida,
+      numJugadores: partida.numJugadores,
+      reiniciarRonda: partida.estadoJuego.reiniciarRonda,
+    });
+    return;
+  }
+
     // Remover la carta jugada del jugador
     const cartaIndex = jugador.cartasDelJugador.indexOf(cartaJugada);
     if (cartaIndex !== -1) {
@@ -286,6 +324,12 @@ io.on("connection", (socket) => {
   // Evento para iniciar la partida
   socket.on("iniciarPartida", (nombrePartida) => {
     const partida = partidas[nombrePartida];
+    if (!partida) {
+      // Si la partida no existe, emitir un evento para redirigir al index
+      console.log(`La partida "${nombrePartida}" no existe.`);
+      return; // Detener la ejecución para que no se intente iniciar la partida
+    }
+
     // Aumentar la ronda después de repartir las cartas
     partida.estadoJuego.ronda += 1; // Aumentar la ronda en uno
     // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
@@ -306,6 +350,12 @@ io.on("connection", (socket) => {
   // Evento para iniciar la partida
   socket.on("iniciarNuevaRonda", (nombrePartida) => {
     const partida = partidas[nombrePartida];
+    if (!partida) {
+      // Si la partida no existe, emitir un evento para redirigir al index
+      console.log(`La partida "${nombrePartida}" no existe.`);
+      return; // Detener la ejecución para que no se intente iniciar la partida
+    }
+
     // Aumentar la ronda después de repartir las cartas
     partida.estadoJuego.ronda += 1; // Aumentar la ronda en uno
 
@@ -335,9 +385,13 @@ io.on("connection", (socket) => {
   // Evento para iniciar la partida
   socket.on("reiniciarRonda", (nombrePartida) => {
     const partida = partidas[nombrePartida];
-
+    if (!partida) {
+      // Si la partida no existe, emitir un evento para redirigir al index
+      console.log(`La partida "${nombrePartida}" no existe.`);
+      return; // Detener la ejecución para que no se intente iniciar la partida
+    }
     partida.estadoJuego.reiniciarRonda = false;
-    
+
     // Emitir la lista actualizada de jugadores y el nombre de la partida
     const jugadores = Object.values(partida.jugadores).map((jugador) => ({
       userId: jugador.userId,
