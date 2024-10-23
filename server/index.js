@@ -310,6 +310,7 @@ io.on("connection", (socket) => {
       console.log(
         `Todos los jugadores han jugado sus cartas en la ronda ${rondaActual} de la partida: ${nombrePartida}. Se habilita la siguiente ronda.`
       );
+      
     }
 
     console.log(
