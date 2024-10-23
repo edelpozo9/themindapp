@@ -9,62 +9,69 @@
     <link rel="stylesheet" href="styles.css"> <!-- Enlace a la hoja de estilos -->  
     <style>
         /* Asegurarse de que las cartas se ordenen horizontalmente y se centren */
-        #zonaCartas {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center; /* Centrar horizontalmente */
-        }
+#zonaCartas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center; /* Centrar horizontalmente */
+}
 
-        /* Estilo para la carta en la mano */
-        .card {
-            width: 100px;
-            height: 150px; /* Ajusta la altura de la carta */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
+/* Estilo para la carta en la mano */
+.card {
+    width: 100px;
+    height: 150px; /* Ajusta la altura de la carta */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #676991; /* Color de fondo morado */
+    color: white; /* Color de texto blanco */
+    border: 2px solid #4a1361; /* Borde morado oscuro */
+}
 
-        .card-body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%; /* Ocupar toda la altura de la carta */
-            width: 100%; /* Ocupar todo el ancho de la carta */
-        }
+.card-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Ocupar toda la altura de la carta */
+    width: 100%; /* Ocupar todo el ancho de la carta */
+}
 
-        .card-title {
-            font-size: 2rem; /* Tamaño del texto de la carta */
-            margin: 0; /* Quitar márgenes para centrar mejor */
-        }
+.card-title {
+    font-size: 2rem; /* Tamaño del texto de la carta */
+    margin: 0; /* Quitar márgenes para centrar mejor */
+}
 
-        /* Estilo para la zona de cartas jugadas */
-        #zonaPartida {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center; /* Centrar las cartas jugadas horizontalmente */
-        }
+/* Estilo para la zona de cartas jugadas */
+#zonaPartida {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center; /* Centrar las cartas jugadas horizontalmente */
+}
 
-        /* Estilo específico para las cartas jugadas */
-        .card-jugada {
-            width: 100px;
-            height: 150px; /* Ajusta la altura de la carta jugada */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* Ajusta el contenido */
-            text-align: center;
-        }
+/* Estilo específico para las cartas jugadas */
+.card-jugada {
+    width: 100px;
+    height: 150px; /* Ajusta la altura de la carta jugada */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ajusta el contenido */
+    text-align: center;
+    background-color: #676991; /* Color de fondo morado oscuro */
+    color: white; /* Color de texto blanco */
+    border: 2px solid #4a1361; /* Borde morado más oscuro */
+}
 
-        .card-jugada .card-body {
-            display: block; /* Usar el display predeterminado para las cartas jugadas */
-        }
+.card-jugada .card-body {
+    display: block; /* Usar el display predeterminado para las cartas jugadas */
+}
 
-        .card-jugada .card-title {
-            font-size: 1.5rem; /* Tamaño del texto de la carta jugada */
-            margin-bottom: 0.5rem;
-        }
+.card-jugada .card-title {
+    font-size: 1.5rem; /* Tamaño del texto de la carta jugada */
+    margin-bottom: 0.5rem;
+}
+
     </style>
 </head>
 
