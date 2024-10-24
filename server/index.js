@@ -45,6 +45,7 @@ io.on("connection", (socket) => {
           cartasJugadas: [],
           siguienteRonda: false,
           reiniciarRonda: false,
+          vidas: 3,
         },
       };
       // Llamar al socket para unirse a la partida inmediatamente después de crearla
@@ -109,7 +110,6 @@ io.on("connection", (socket) => {
         const jugadores = Object.values(partida.jugadores).map((jugador) => ({
           userId: jugador.userId,
           nombreUsuario: jugador.nombreUsuario,
-          vidas: jugador.vida,
         }));
 
         // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
@@ -132,7 +132,6 @@ io.on("connection", (socket) => {
           partida.jugadores[userId] = {
             userId: userId,
             nombreUsuario: nombreUsuario, // Guardar el nombre del usuario
-            vida: 3, // Cada jugador comienza con 3 vidas
             cartasDelJugador: [],
             cartasJugadas: [], // Cartas que han jugado
           };
@@ -160,7 +159,6 @@ io.on("connection", (socket) => {
           const jugadores = Object.values(partida.jugadores).map((jugador) => ({
             userId: jugador.userId,
             nombreUsuario: jugador.nombreUsuario,
-            vidas: jugador.vida,
           }));
 
           // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
@@ -239,7 +237,6 @@ io.on("connection", (socket) => {
       const jugadores = Object.values(partida.jugadores).map((jugador) => ({
         userId: jugador.userId,
         nombreUsuario: jugador.nombreUsuario,
-        vidas: jugador.vida,
       }));
 
       // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
@@ -361,7 +358,6 @@ io.on("connection", (socket) => {
     const jugadores = Object.values(partida.jugadores).map((jugador) => ({
       userId: jugador.userId,
       nombreUsuario: jugador.nombreUsuario,
-      vidas: jugador.vida,
     }));
 
     // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
@@ -449,7 +445,6 @@ io.on("connection", (socket) => {
         const jugadores = Object.values(partida.jugadores).map((jugador) => ({
           userId: jugador.userId,
           nombreUsuario: jugador.nombreUsuario,
-          vidas: jugador.vida,
         }));
 
         if(partida.estadoJuego.ronda > 0){
