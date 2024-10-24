@@ -21,7 +21,7 @@ h1 {
 }
 
 h2 {
-    color: #1E3A78; /* Azul marino para los subtítulos */
+    font-size: 2rem;
 }
 
 .container {
@@ -68,10 +68,7 @@ p {
     background-color: #f8f9fa; /* Fondo suave */
 }
 
-.sala-title {
-    color: #007bff; /* Verde para el título */
-    
-}
+
 
 
 .sala-card {
