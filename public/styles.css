@@ -69,8 +69,10 @@ p {
 }
 
 .sala-title {
-    color: #0056b3; /* Verde para el título */
+    color: #007bff; /* Verde para el título */
+    
 }
+
 
 .sala-card {
     background-color: #ffffff; /* Blanco para las tarjetas */
