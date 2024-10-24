@@ -502,7 +502,7 @@ io.on("connection", (socket) => {
         }));
 
         if(partida.estadoJuego.ronda > 0){
-          io.emit("dejarPartida", {
+          io.to(nombrePartida).emit("dejarPartida", {
             mensaje: `Completad la sala para reiniciar la ronda`,
           });
 
