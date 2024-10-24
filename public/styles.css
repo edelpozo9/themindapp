@@ -9,6 +9,7 @@ body {
     font-family: 'Arial', sans-serif;
     display: flex; /* Usar Flexbox para organizar la página */
     flex-direction: column; /* Apilar los elementos verticalmente */
+    
 }
 
 nav .nav-link {
