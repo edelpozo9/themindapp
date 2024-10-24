@@ -21,7 +21,7 @@ h1 {
 }
 
 h2 {
-    font-size: 2rem;
+    font-weight: 600;
 }
 
 .container {
@@ -57,10 +57,16 @@ p {
     font-size: 1.1em; /* Aumentar el tamaño de la fuente para mejor legibilidad */
 }
 
+.indexContainer {
+    padding: 20px; /* Espaciado interno */
+    border-radius: 8px; /* Bordes redondeados */
+    margin: 1rem;
+}
 .features {
     background-color: #F4F4F4; /* Fondo gris claro para la sección de características */
     padding: 20px; /* Espaciado interno */
     border-radius: 8px; /* Bordes redondeados */
+    margin: 1.5rem;
 }
 
 /* Estilos específicos para sala.html */
