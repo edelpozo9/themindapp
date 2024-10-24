@@ -1,16 +1,39 @@
-<header class="text-white text-center py-3">
-    <a href="index.html" class="text-white text-decoration-none">
-        <h1>The Mind Online</h1>
-    </a>
-    <nav>
-        <ul class="nav justify-content-center">
-            <li class="nav-item"><a class="nav-link text-white" href="info.html">Información del Juego</a></li>
-            <li class="nav-item"><a class="nav-link text-white" href="reglas.html">Reglas del Juego</a></li>
-            <li class="nav-item"><a class="nav-link text-white" href="jugar.html">Comenzar a Jugar</a></li>
-            <li class="nav-item"><a class="nav-link text-white" href="https://www.amazon.com/s?k=the+mind+game" target="_blank">Comprar Juego</a></li>
-        </ul>
-    </nav>
-    <!-- Incluir SweetAlert -->
+<header class="bg-primary text-white py-3">
+    <!-- Incluir SweetAlert y Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+        <div class="container">
+
+            <!-- Título alineado a la izquierda -->
+            <a href="index.html" class="navbar-brand text-white">
+                <h1 class="m-0">The Mind Online</h1>
+            </a>
+            <!-- Botón de menú para pantallas pequeñas, alineado a la derecha -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menú colapsable -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link text-white" href="info.html">Información</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="reglas.html">Reglas</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="jugar.html">Jugar</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="https://www.amazon.com/s?k=the+mind+game"
+                            target="_blank">Comprar Juego</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toggler button for small screens -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSdCt"
+        aria-controls="navbarSdCt" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+
 </header>

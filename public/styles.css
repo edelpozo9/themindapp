@@ -11,17 +11,8 @@ body {
     flex-direction: column; /* Apilar los elementos verticalmente */
 }
 
-header {
-    background-color: #1E3A78; /* Azul marino para el encabezado */
-    padding: 20px 0;
-}
-
 nav .nav-link {
     color: white; /* Texto blanco en los enlaces */
-}
-
-nav .nav-link:hover {
-    text-decoration: underline; /* Subrayado en hover */
 }
 
 h1 {
@@ -117,3 +108,50 @@ p {
 h2 {
     margin-top: 0; /* Eliminar margen superior para h2 */
 }
+/* Estilos para el Header */
+header {
+    background-color: #1E3A78; /* Azul marino */
+    padding: 20px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
+    transition: background-color 0.3s ease; /* Transición para el fondo */
+}
+
+header:hover {
+    background-color: #1A356F; /* Color ligeramente más oscuro en hover */
+}
+
+header a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+header a:hover {
+    color: #00BFFF; /* Cian al pasar el cursor */
+}
+
+header h1 {
+    font-size: 2.2rem;
+    margin: 0;
+    color: #ffffff;
+    transition: color 0.3s ease; /* Transición de color en el título */
+}
+
+nav .nav-link {
+    color: white;
+    font-weight: bold;
+    padding: 8px 15px; /* Espaciado en los enlaces */
+    border-radius: 5px; /* Bordes ligeramente redondeados */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
+    margin: 5px;
+}
+
+nav .nav-link:hover {
+    background-color: #00BFFF; /* Fondo cian en hover */
+    color: #ffffff; /* Texto blanco en hover */
+}
+
+.nav {
+    gap: 10px; /* Espaciado entre los elementos de navegación */
+}
+
