@@ -2,9 +2,10 @@
   "name": "themindapp",
   "version": "1.0.0",
   "description": "the mind juego online",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "main": "server/index.js",  "scripts": {
+    "start": "node server/index.js",
+    "build": "echo 'No build script defined'",
+    "test": "echo \"Error: no test specified\" && exit 1" 
   },
   "repository": {
     "type": "git",

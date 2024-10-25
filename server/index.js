@@ -489,5 +489,5 @@ io.on("connection", (socket) => {
 // Levantar el servidor en el puerto 3000
 const PORT = 3000;
 server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running`);
 });
