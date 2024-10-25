@@ -227,7 +227,7 @@
         </section>
         <button id="scrollTopBtn" class="scroll-to-top">↑</button>
 
-        <div class="cookie-consent" id="cookieConsent">
+        <div class="cookie-consent" id="cookieConsent" style="display: none;">
             <p>Usamos cookies para mejorar tu experiencia en nuestro sitio. Al continuar navegando, aceptas el uso de
                 cookies.</p>
             <button id="acceptCookies" class="btn btn-primary">Aceptar</button>
@@ -298,21 +298,25 @@
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const cookieConsent = document.getElementById("cookieConsent");
-            const acceptCookiesBtn = document.getElementById("acceptCookies");
+        // Al cargar la página, verificar si el usuario ya ha aceptado las cookies
+        window.onload = function () {
+            const cookieConsent = document.getElementById('cookieConsent');
 
-            // Verifica si ya se aceptaron las cookies
-            if (!localStorage.getItem("cookiesAccepted")) {
-                cookieConsent.style.display = "flex"; // Muestra el aviso de cookies
+            // Verifica en localStorage si el usuario ya ha aceptado las cookies
+            if (!localStorage.getItem('cookiesAccepted')) {
+                // Si no ha aceptado, mostrar el mensaje
+                cookieConsent.style.display = 'flex'; // Cambiar a 'flex' para que aplique el estilo
             }
+        };
 
-            // Al hacer clic en "Aceptar", guarda la preferencia y oculta el aviso
-            acceptCookiesBtn.addEventListener("click", function () {
-                localStorage.setItem("cookiesAccepted", "true");
-                cookieConsent.style.display = "none"; // Oculta el aviso
-            });
-        });
+        // Al hacer clic en el botón de aceptar
+        document.getElementById('acceptCookies').onclick = function () {
+            // Guardar en localStorage que el usuario ha aceptado las cookies
+            localStorage.setItem('cookiesAccepted', 'true');
+
+            // Ocultar el mensaje de cookies
+            document.getElementById('cookieConsent').style.display = 'none';
+        };
     </script>
 </body>
 

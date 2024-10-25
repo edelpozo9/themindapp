@@ -188,20 +188,22 @@ nav .nav-link:hover {
     font-size: 20px; /* Tamaño del icono */
 }
 .cookie-consent {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
+    display: flex; /* Usar flexbox para alinear los elementos */
+    justify-content: space-between; /* Espacio entre el mensaje y el botón */
+    align-items: center; /* Centrar verticalmente los elementos */
+    padding: 10px; /* Espaciado interno */
+    background: rgba(0, 0, 0, 0.8); /* Color de fondo del mensaje */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 10000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    color: white;
+    border: 1px solid #ccc; /* Borde opcional */
+    border-radius: 5px; /* Bordes redondeados */
+    position: fixed; /* Fijar en la parte inferior o superior de la pantalla */
+    bottom: 20px; /* Espaciado desde la parte inferior */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translateX(-50%); /* Ajustar posición horizontalmente */
+    z-index: 1000; /* Asegurarse de que esté encima de otros elementos */
 }
+
 
 .cookie-consent p {
     margin: 0;
@@ -217,7 +219,7 @@ nav .nav-link:hover {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-size: 14px;
+    font-size: 14px;    
 }
 
 .cookie-consent button:hover {
