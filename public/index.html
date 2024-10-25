@@ -164,8 +164,12 @@
                 ponerse en contacto a través del correo electrónico proporcionado, y tomaremos las medidas necesarias para solucionar el problema lo antes posible.
             </p>
         </section>
-        
+        <button id="scrollTopBtn" class="scroll-to-top">↑</button>
 
+        <div class="cookie-consent" id="cookieConsent">
+            <p>Usamos cookies para mejorar tu experiencia en nuestro sitio. Al continuar navegando, aceptas nuestra <a href="#" style="color: #007bff; text-decoration: underline;">Política de Cookies</a>.</p>
+            <button id="acceptCookies" class="btn btn-primary">Aceptar</button>
+        </div>
     </main>
 
     <div id="footer-container"></div>
@@ -196,6 +200,43 @@
                     console.error("Error al cargar el pie de página:", error)
                 );
         });
+    </script>
+    <script>
+        // Obtener el botón
+        const scrollTopBtn = document.getElementById("scrollTopBtn");
+    
+        // Mostrar el botón al hacer scroll hacia abajo
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                scrollTopBtn.style.display = "block";
+            } else {
+                scrollTopBtn.style.display = "none";
+            }
+        };
+    
+        // Al hacer clic, volver al principio de la página
+        scrollTopBtn.addEventListener("click", function() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const cookieConsent = document.getElementById("cookieConsent");
+        const acceptCookiesBtn = document.getElementById("acceptCookies");
+
+        // Verifica si ya se aceptaron las cookies
+        if (!localStorage.getItem("cookiesAccepted")) {
+            cookieConsent.style.display = "flex"; // Muestra el aviso de cookies
+        }
+
+        // Al hacer clic en "Aceptar", guarda la preferencia y oculta el aviso
+        acceptCookiesBtn.addEventListener("click", function () {
+            localStorage.setItem("cookiesAccepted", "true");
+            cookieConsent.style.display = "none"; // Oculta el aviso
+        });
+    });
     </script>
 </body>
 
