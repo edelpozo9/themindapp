@@ -150,6 +150,7 @@ nav .nav-link {
     border-radius: 5px; /* Bordes ligeramente redondeados */
     transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
     margin: 5px;
+    padding-left: 8px !important;
 }
 
 nav .nav-link:hover {
