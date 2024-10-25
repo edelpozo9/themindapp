@@ -19,7 +19,6 @@ const CARTAS = Array.from({ length: 100 }, (_, i) => i + 1); // Crea un array de
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.playerId; // Obtener playerId del handshake
 
-
   // Manejar la creación de una nueva partida
   socket.on("crearPartida", (nombrePartida, numJugadores, nombreUsuario) => {
     // Verificar si el usuario ya está en alguna partida
@@ -47,6 +46,7 @@ io.on("connection", (socket) => {
           reiniciarRonda: false,
           vidas: 3,
         },
+        createdAt: new Date(),
       };
       // Llamar al socket para unirse a la partida inmediatamente después de crearla
       socket.emit("unirsePartida", nombrePartida, nombreUsuario);
@@ -56,7 +56,15 @@ io.on("connection", (socket) => {
         numJugadores,
         nombreUsuario,
       });
-    
+
+      // Programa la eliminación de la partida después de 1 hora (3600000 ms)
+      setTimeout(() => {
+        // Llamar al evento de 'dejarPartida' pasando el nombre de la partida      
+          delete partidas[nombrePartida];        
+        console.log(`Partida "${nombrePartida}" eliminada después de 4 horas.`);
+      }, 14400000);
+
+      console.log(`Partida "${nombrePartida}" creada por ${nombreUsuario}.`);
     }
   });
 
@@ -432,7 +440,6 @@ io.on("connection", (socket) => {
 
   // Función para manejar la desconexión de un jugador
   function manejarDesconexion(userId, reason) {
-
     // Buscar y eliminar al jugador de la partida correspondiente
     for (const nombrePartida in partidas) {
       const partida = partidas[nombrePartida];
@@ -440,30 +447,29 @@ io.on("connection", (socket) => {
       // Si el jugador está en esta partida, lo eliminamos
       if (partida.jugadores[userId]) {
         delete partida.jugadores[userId];
-        
+
         // Emitir la lista actualizada de jugadores y el nombre de la partida
         const jugadores = Object.values(partida.jugadores).map((jugador) => ({
           userId: jugador.userId,
           nombreUsuario: jugador.nombreUsuario,
         }));
 
-        if(partida.estadoJuego.ronda > 0){
+        if (partida.estadoJuego.ronda > 0) {
           io.to(nombrePartida).emit("dejarPartida", {
             mensaje: `Completad la sala para reiniciar la ronda`,
           });
 
           // Modificar el valor de reiniciarRonda en el estado de la partida
-        partida.estadoJuego.reiniciarRonda = true;
+          partida.estadoJuego.reiniciarRonda = true;
 
-        // Emitir el evento de estado de la partida con reiniciarRonda = true
-        io.to(nombrePartida).emit("estadoPartida", {
-          nombrePartida,
-          rondaActual: partida.rondaActual,
-          siguienteRonda: false, // Esto puede depender de tu lógica específica
-          reiniciarRonda: true,
-        });
+          // Emitir el evento de estado de la partida con reiniciarRonda = true
+          io.to(nombrePartida).emit("estadoPartida", {
+            nombrePartida,
+            rondaActual: partida.rondaActual,
+            siguienteRonda: false, // Esto puede depender de tu lógica específica
+            reiniciarRonda: true,
+          });
         }
-       
 
         // Emitir la lista actualizada de jugadores a todos los jugadores de la partida
         io.emit("actualizarJugadores", {
@@ -472,8 +478,6 @@ io.on("connection", (socket) => {
           numJugadores: partida.numJugadores,
           reiniciarRonda: partida.estadoJuego.reiniciarRonda,
         });
-
-        
 
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
         if (Object.keys(partida.jugadores).length === 0) {
