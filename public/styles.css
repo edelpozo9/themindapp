@@ -206,8 +206,9 @@ nav .nav-link:hover {
     left: 50%; /* Centrar horizontalmente */
     transform: translateX(-50%); /* Ajustar posición horizontalmente */
     z-index: 1000; /* Asegurarse de que esté encima de otros elementos */
+    width: calc(100% - 40px); /* Ajustar el ancho para que no llegue a los bordes */
+    max-width: 600px; /* Ancho máximo para pantallas grandes */
 }
-
 
 .cookie-consent p {
     margin: 0;
@@ -226,6 +227,34 @@ nav .nav-link:hover {
     font-size: 14px;    
 }
 
+/* Cambiar el estilo del botón al pasar el ratón */
 .cookie-consent button:hover {
     background-color: #0056b3;
+}
+
+/* Estilos responsivos para pantallas pequeñas */
+@media (max-width: 576px) {
+    .cookie-consent {
+        flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
+        align-items: flex-start; /* Alinear elementos al inicio */
+        padding: 15px; /* Ajustar padding */
+        width: calc(100% - 20px); /* Ancho ajustado para pantallas pequeñas */
+        left: 10px; /* Alinear hacia la izquierda */
+        transform: none; /* Desactivar transform para centrar */
+        bottom: 10px; /* Espaciado desde la parte inferior */
+    }
+
+    .cookie-consent p {
+        font-size: 16px; /* Aumentar tamaño de fuente en pantallas pequeñas */
+    }
+
+    .cookie-consent button {
+        margin-left: 0; /* Quitar margen izquierdo en pantallas pequeñas */
+        margin-top: 10px; /* Añadir margen superior para separar del texto */
+        margin-bottom: 0; /* Ajustar margen inferior si es necesario */
+        margin-right: auto; /* Márgenes automáticos para centrar */
+        margin-left: auto; /* Márgenes automáticos para centrar */
+        width: auto; /* Hacer que el botón no ocupe todo el ancho */
+        padding: 8px 16px; /* Espaciado interno */
+    }
 }
