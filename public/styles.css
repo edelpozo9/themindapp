@@ -4,10 +4,6 @@ html, body {
 }
 
 body {
-    background-image: url('/img/fondo_index.jpg');
-    background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
-    background-repeat: no-repeat; /* Evita que la imagen se repita */
-    background-position: center center; /* Centra la imagen */
     background-color: #FFFFFF; /* Fondo blanco en caso de que la imagen no cargue */
     color: #2B2B2B; /* Texto gris oscuro */
     font-family: 'Arial', sans-serif;
