@@ -4,6 +4,10 @@ html, body {
 }
 
 body {
+    background-image: url('fondo_index.jpg');
+    background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+
+    background-position: center center; /* Centra la imagen */
     background-color: #FFFFFF; /* Fondo blanco en caso de que la imagen no cargue */
     color: #2B2B2B; /* Texto gris oscuro */
     font-family: 'Arial', sans-serif;
@@ -116,7 +120,7 @@ h2 {
 }
 /* Estilos para el Header */
 header {
-    background-color: #1E3A78; /* Azul marino */
+    background-color: #5b71a9 !important; /* Azul marino */
     padding: 20px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
     transition: background-color 0.3s ease; /* Transición para el fondo */
@@ -154,7 +158,7 @@ nav .nav-link {
 }
 
 nav .nav-link:hover {
-    background-color: #00BFFF; /* Fondo cian en hover */
+    background-color: #7a9dc4 ; /* Fondo cian en hover */
     color: #ffffff; /* Texto blanco en hover */
 }
 
