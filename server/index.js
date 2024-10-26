@@ -7,13 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Redirige todas las peticiones a HTTPS
-app.use((req, res, next) => {
-  if (req.headers['x-forwarded-proto'] !== 'https') {
-    return res.redirect('https://' + req.headers.host + req.url);
-  }
-  next();
-});
+
 
 // Sirve archivos estáticos
 app.use(express.static("public"));
@@ -497,6 +491,8 @@ io.on("connection", (socket) => {
     }
   }
 });
+
+
 
 // Levantar el servidor en el puerto 3000
 const PORT = 3000;

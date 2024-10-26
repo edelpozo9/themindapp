@@ -39,6 +39,8 @@
   gtag('js', new Date());
 
   gtag('config', 'G-XGQV29RSQ4');
+
+  
 </script>
 <body>
     <div id="header-container"></div>
@@ -46,8 +48,8 @@
 
     <main class=" mt-4">
         <section id="jugar" class="indexContainer mt-4">
-            <h2>¿Qué es The Mind?</h2>
-            <p class="card-text">
+            <h2 id="what-is-the-mind">¿Qué es The Mind?</h2>
+            <p id="description" class="card-text">
                 <strong>The Mind Online</strong> es un juego de cartas cooperativo donde los jugadores deben trabajar
                 juntos para jugar cartas en orden ascendente, ¡sin hablar!
                 Es un desafío que pone a prueba tu sincronización, intuición y trabajo en equipo.
@@ -55,60 +57,56 @@
             <ul class="list-unstyled">
                 <li class="mb-3">
                     <span style="color: #007bff; font-size: 1.5em; margin-right: 10px;">🌟</span>
-                    <strong>Juega con tus amigos en línea:</strong> Conéctate y disfruta de una experiencia cooperativa
-                    única con jugadores de cualquier lugar.
+                    <span id="play-with-friends">
+                        <strong>Juega con tus amigos en línea:</strong> Conéctate y disfruta de una experiencia cooperativa
+                        única con jugadores de cualquier lugar.
+                    </span>
                 </li>
                 <li class="mb-3">
                     <span style="color: #28a745; font-size: 1.5em; margin-right: 10px;">🤫</span>
-                    <strong>Sin comunicación verbal:</strong> No se permiten palabras ni gestos, ¡todo se basa en la
-                    intuición y el sentimiento de equipo!
+                    <span id="no-verbal-communication">
+                        <strong>Sin comunicación verbal:</strong> No se permiten palabras ni gestos, ¡todo se basa en la
+                        intuición y el sentimiento de equipo!
+                    </span>
                 </li>
                 <li class="mb-3">
                     <span style="color: #ffc107; font-size: 1.5em; margin-right: 10px;">🎯</span>
-                    <strong>Mejora tus habilidades:</strong> Desarrolla tu capacidad de sincronización y estrategia en
-                    cada partida, ¡el reto es constante!
+                    <span id="improve-skills">
+                        <strong>Mejora tus habilidades:</strong> Desarrolla tu capacidad de sincronización y estrategia en
+                        cada partida, ¡el reto es constante!
+                    </span>
                 </li>
             </ul>
         </section>
+        
         <section id="jugar" class="indexContainer mt-4">
-            <div class="container"> <!-- Agregamos un contenedor de Bootstrap -->
-                <div class="card text-center mx-auto" style="max-width: 600px;"> <!-- Definimos un ancho máximo -->
+            <div class="container">
+                <div class="card text-center mx-auto" style="max-width: 600px;">
                     <div class="card-body">
-                        <h2 class="card-title">¡Jugar!</h2>
-                        <p class="card-text">
-                            Haz clic en el botón de abajo para unirte a una partida o crear
-                            una nueva.
+                        <h2 id="play-title" class="card-title">¡Jugar!</h2>
+                        <p id="play-description" class="card-text">
+                            Haz clic en el botón de abajo para unirte a una partida o crear una nueva.
                         </p>
                         <div class="text-center mt-4">
-                            <!-- Contenedor para centrar el botón -->
                             <a href="jugar.html" class="btn btn-primary btn-lg" id="startGame">Empezar a Jugar</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </section>        
         
         <section id="reglas" class="features mt-4">
-            <h2>¿Cómo Jugar?</h2>
-            <h4>Reglas</h4>
+            <h2 id="how-to-play">¿Cómo Jugar?</h2>
+            <h4 id="rules-title">Reglas</h4>
             <ol class="card-text">
-                <li><strong>Sin Comunicación:</strong> Durante el juego, no está permitido hablar, hacer gestos ni
-                    utilizar ningún tipo de señal entre los jugadores.</li>
-                <li><strong>Jugar las Cartas:</strong> El objetivo es colocar las cartas en la mesa en orden ascendente.
-                    Los jugadores deben jugar sus cartas en el momento que consideren adecuado, sin un orden de turno
-                    fijo.</li>
-                <li><strong>Perder Vidas:</strong> Si un jugador coloca una carta fuera de orden, el grupo pierde una
-                    vida. Las vidas son limitadas, así que es importante ser estratégico.</li>
-                <li><strong>Niveles y Avance:</strong> A medida que avanzan, el juego se vuelve más difícil. En cada
-                    nivel, los jugadores reciben más cartas, aumentando el reto.</li>
-                <li><strong>Final del Juego:</strong> La partida termina si el grupo pierde todas sus vidas. ¡El
-                    objetivo es avanzar lo más lejos posible sin perderlas!</li>
+                <li id="rule1"><strong>Sin Comunicación:</strong> Durante el juego, no está permitido hablar, hacer gestos ni utilizar ningún tipo de señal entre los jugadores.</li>
+                <li id="rule2"><strong>Jugar las Cartas:</strong> El objetivo es colocar las cartas en la mesa en orden ascendente. Los jugadores deben jugar sus cartas en el momento que consideren adecuado, sin un orden de turno fijo.</li>
+                <li id="rule3"><strong>Perder Vidas:</strong> Si un jugador coloca una carta fuera de orden, el grupo pierde una vida. Las vidas son limitadas, así que es importante ser estratégico.</li>
+                <li id="rule4"><strong>Niveles y Avance:</strong> A medida que avanzan, el juego se vuelve más difícil. En cada nivel, los jugadores reciben más cartas, aumentando el reto.</li>
+                <li id="rule5"><strong>Final del Juego:</strong> La partida termina si el grupo pierde todas sus vidas. ¡El objetivo es avanzar lo más lejos posible sin perderlas!</li>
             </ol>
-
-
-            <h4>Videos Tutoriales</h4>
-            <p>Mira los siguientes videos para entender mejor cómo jugar a "The Mind" y convertirte en un experto:</p>
-
+            <h4 id="tutorial-videos">Videos Tutoriales</h4>
+            <p id="tutorial-description">Mira los siguientes videos para entender mejor cómo jugar a "The Mind" y convertirte en un experto:</p>
             <div class="video-flex-container d-flex flex-wrap justify-content-center gap-3 mb-4">
                 <div class="video-container" style="flex: 1 1 300px; max-width: 560px;">
                     <iframe class="w-100" height="315" src="https://www.youtube.com/embed/HGCYwaZUFvQ"
@@ -116,7 +114,6 @@
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen></iframe>
                 </div>
-
                 <div class="video-container" style="flex: 1 1 300px; max-width: 560px;">
                     <iframe class="w-100" height="315" src="https://www.youtube.com/embed/FvhFnp6H21E"
                         title="Tutorial de The Mind - Video 2" frameborder="0"
@@ -125,77 +122,61 @@
                 </div>
             </div>
         </section>
+        
         <section class="indexContainer mt-4 game-features" id="info">
-            <h2>Características del Juego</h2>
+            <h2 id="game-features">Características del Juego</h2>
             <ul class="card-text">
-                <li><strong>Juego Cooperativo:</strong> "The Mind" es un juego donde todos los jugadores trabajan
-                    juntos, creando un ambiente de camaradería y diversión para lograr el objetivo común.</li>
-                <li><strong>Desarrollo de la Intuición:</strong> A medida que avances, mejorarás tu capacidad para
-                    captar las señales de tus compañeros, fortaleciendo habilidades sociales y confianza.</li>
-                <li><strong>Desafío Progresivo:</strong> Con niveles de dificultad crecientes, el juego siempre ofrece
-                    nuevos retos que mantienen la experiencia fresca y emocionante.</li>
-                <li><strong>Alta Rejugabilidad:</strong> Cada partida es única gracias a su naturaleza impredecible,
-                    brindando siempre nuevas oportunidades para mejorar.</li>
-                <li><strong>Accesible para Todos:</strong> Las reglas son sencillas y fáciles de aprender, lo que lo
-                    convierte en una opción perfecta para principiantes y jugadores experimentados por igual.</li>
-                <li><strong>Inmersión Total:</strong> La tensión de jugar en silencio crea una atmósfera única que te
-                    mantendrá al borde de tu asiento.</li>
+                <li id="feature1"><strong>Juego Cooperativo:</strong> "The Mind" es un juego donde todos los jugadores trabajan juntos, creando un ambiente de camaradería y diversión para lograr el objetivo común.</li>
+                <li id="feature2"><strong>Desarrollo de la Intuición:</strong> A medida que avances, mejorarás tu capacidad para captar las señales de tus compañeros, fortaleciendo habilidades sociales y confianza.</li>
+                <li id="feature3"><strong>Desafío Progresivo:</strong> Con niveles de dificultad crecientes, el juego siempre ofrece nuevos retos que mantienen la experiencia fresca y emocionante.</li>
+                <li id="feature4"><strong>Alta Rejugabilidad:</strong> Cada partida es única gracias a su naturaleza impredecible, brindando siempre nuevas oportunidades para mejorar.</li>
+                <li id="feature5"><strong>Accesible para Todos:</strong> Las reglas son sencillas y fáciles de aprender, lo que lo convierte en una opción perfecta para principiantes y jugadores experimentados por igual.</li>
+                <li id="feature6"><strong>Inmersión Total:</strong> La tensión de jugar en silencio crea una atmósfera única que te mantendrá al borde de tu asiento.</li>
             </ul>
         </section>
-
-
+        
         <section class="features mt-4">
-            <h2>Consejos para jugar</h2>
-            <p>
-                Para tener éxito en <strong>The Mind</strong>, aquí hay algunos consejos útiles:
-            </p>
+            <h2 id="tips-to-play">Consejos para jugar</h2>
+            <p id="tip-description">Para tener éxito en <strong>The Mind</strong>, aquí hay algunos consejos útiles:</p>
             <ol class="list-unstyled">
-                <li class="mb-3">
+                <li id="tip1" class="mb-3">
                     <span style="color: #007bff; font-size: 1.5em; margin-right: 10px;">👀</span>
-                    <strong>Observa a tus compañeros:</strong> Presta atención a las cartas y las reacciones de los
-                    demás jugadores para entender su ritmo y evitar errores.
+                    <strong>Observa a tus compañeros:</strong> Presta atención a las cartas y las reacciones de los demás jugadores para entender su ritmo y evitar errores.
                 </li>
-                <li class="mb-3">
+                <li id="tip2" class="mb-3">
                     <span style="color: #28a745; font-size: 1.5em; margin-right: 10px;">🕰️</span>
-                    <strong>Juega en el momento adecuado:</strong> Sé paciente y espera el momento justo para jugar tu
-                    carta. No te apresures, cada decisión cuenta.
+                    <strong>Juega en el momento adecuado:</strong> Sé paciente y espera el momento justo para jugar tu carta. No te apresures, cada decisión cuenta.
                 </li>
-                <li class="mb-3">
+                <li id="tip3" class="mb-3">
                     <span style="color: #ffc107; font-size: 1.5em; margin-right: 10px;">⏳</span>
-                    <strong>Practica la paciencia:</strong> A veces, la mejor estrategia es esperar y dejar que otros
-                    jugadores jueguen primero.
+                    <strong>Practica la paciencia:</strong> A veces, la mejor estrategia es esperar y dejar que otros jugadores jueguen primero.
                 </li>
-                <li class="mb-3">
+                <li id="tip4" class="mb-3">
                     <span style="color: #17a2b8; font-size: 1.5em; margin-right: 10px;">💡</span>
-                    <strong>Confía en tu intuición:</strong> Sigue tu instinto y la sincronización del grupo para tomar
-                    decisiones acertadas.
+                    <strong>Confía en tu intuición:</strong> Sigue tu instinto y la sincronización del grupo para tomar decisiones acertadas.
                 </li>
-                <li class="mb-3">
+                <li id="tip5" class="mb-3">
                     <span style="color: #dc3545; font-size: 1.5em; margin-right: 10px;">🤝</span>
-                    <strong>Colabora en equipo:</strong> Trabaja en conjunto y mejora la comunicación no verbal para
-                    alcanzar la victoria como grupo.
+                    <strong>Colabora en equipo:</strong> Trabaja en conjunto y mejora la comunicación no verbal para alcanzar la victoria como grupo.
                 </li>
             </ol>
         </section>
-
-
+        
         <section id="jugar" class="indexContainer mt-4">
-            <div class="container"> <!-- Agregamos un contenedor de Bootstrap -->
-                <div class="card text-center mx-auto" style="max-width: 600px;"> <!-- Definimos un ancho máximo -->
+            <div class="container">
+                <div class="card text-center mx-auto" style="max-width: 600px;">
                     <div class="card-body">
-                        <h2 class="card-title">¡Jugar!</h2>
-                        <p class="card-text">
-                            Haz clic en el botón de abajo para unirte a una partida o crear
-                            una nueva.
+                        <h2 id="play-title1" class="card-title">¡Jugar!</h2>
+                        <p id="play-description1" class="card-text">
+                            Haz clic en el botón de abajo para unirte a una partida o crear una nueva.
                         </p>
                         <div class="text-center mt-4">
-                            <!-- Contenedor para centrar el botón -->
-                            <a href="jugar.html" class="btn btn-primary btn-lg" id="startGame">Empezar a Jugar</a>
+                            <a href="jugar.html" class="btn btn-primary btn-lg" id="startGame1">Empezar a Jugar</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </section>  
         
         <section id="comprar" class="indexContainer mt-4">
             <h2>¡Compra The Mind!</h2>
@@ -204,7 +185,6 @@
                 familiares.
                 Haz clic en el botón de abajo para adquirirlo en Amazon.
             </p>
-
             <div class="d-flex flex-column align-items-center gap-3">
                 <div class="game-image-container">
                     <a href="https://amzn.to/3NEXsWh" target="_blank">
@@ -217,6 +197,8 @@
                 </div>
             </div>
         </section>
+        
+
         <section id="disclaimer" class="indexContainer mt-4">
             <h2>Disclaimer</h2>
             <p class="card-text">
@@ -239,6 +221,8 @@
                 para solucionar el problema lo antes posible.
             </p>
         </section>
+        
+        
         <button id="scrollTopBtn" class="scroll-to-top">↑</button>
 
         <div class="cookie-consent" id="cookieConsent" style="display: none;">
@@ -246,6 +230,7 @@
                 cookies.</p>
             <button id="acceptCookies" class="btn btn-primary">Aceptar</button>
         </div>
+        
         
     </main>
 
@@ -330,6 +315,177 @@
             // Ocultar el mensaje de cookies
             document.getElementById('cookieConsent').style.display = 'none';
         };
+
+
+        const translations = {
+    en: {
+        whatIsTheMind: "What is The Mind?",
+        description: "<strong>The Mind Online</strong> is a cooperative card game where players must work together to play cards in ascending order, without talking! It’s a challenge that tests your timing, intuition, and teamwork.",
+        playWithFriends: "<strong>Play with your friends online:</strong> Connect and enjoy a unique cooperative experience with players from anywhere.",
+        noVerbalCommunication: "<strong>No verbal communication:</strong> No words or gestures allowed, everything is based on intuition and teamwork!",
+        improveSkills: "<strong>Improve your skills:</strong> Develop your timing and strategy with each game, the challenge is constant!",
+        playTitle: "Play!",
+        playDescription: "Click the button below to join a game or create a new one.",
+        startGameButton: "Start Playing",
+        howToPlay: "How to Play?",
+        rules: "Rules",
+        rule1: "<strong>No Communication:</strong> During the game, players are not allowed to talk, gesture, or use any signals.",
+        rule2: "<strong>Playing the Cards:</strong> The objective is to place the cards on the table in ascending order. Players must play their cards when they feel it's appropriate, without a fixed turn order.",
+        rule3: "<strong>Lose Lives:</strong> If a player places a card out of order, the group loses a life. Lives are limited, so it's important to be strategic.",
+        rule4: "<strong>Levels and Progression:</strong> As they progress, the game becomes more difficult. At each level, players receive more cards, increasing the challenge.",
+        rule5: "<strong>End of the Game:</strong> The game ends if the group loses all their lives. The goal is to progress as far as possible without losing them!",
+        tutorialVideos: "Tutorial Videos",
+        tutorialDescription: "Watch the following videos to better understand how to play 'The Mind' and become an expert:",
+        gameFeatures: "Game Features",
+        feature1: "<strong>Cooperative Game:</strong> 'The Mind' is a game where all players work together, creating an environment of camaraderie and fun to achieve a common goal.",
+        feature2: "<strong>Intuition Development:</strong> As you progress, you'll improve your ability to pick up on your teammates' signals, strengthening social skills and trust.",
+        feature3: "<strong>Progressive Challenge:</strong> With increasing difficulty levels, the game always offers new challenges that keep the experience fresh and exciting.",
+        feature4: "<strong>High Replayability:</strong> Each game is unique due to its unpredictable nature, always providing new opportunities to improve.",
+        feature5: "<strong>Accessible to Everyone:</strong> The rules are simple and easy to learn, making it a perfect choice for beginners and experienced players alike.",
+        feature6: "<strong>Total Immersion:</strong> The tension of playing in silence creates a unique atmosphere that will keep you on the edge of your seat.",
+        tipsToPlay: "Tips for Playing",
+        tipDescription: "To succeed in <strong>The Mind</strong>, here are some useful tips:",
+        tip1: "<strong>Observe your teammates:</strong> Pay attention to the cards and reactions of other players to understand their rhythm and avoid mistakes.",
+        tip2: "<strong>Play at the right moment:</strong> Be patient and wait for the right moment to play your card. Don't rush, every decision counts.",
+        tip3: "<strong>Practice patience:</strong> Sometimes, the best strategy is to wait and let other players play first.",
+        tip4: "<strong>Trust your intuition:</strong> Follow your instincts and the group's timing to make good decisions.",
+        tip5: "<strong>Collaborate as a team:</strong> Work together and improve non-verbal communication to achieve victory as a group.",
+        buyGame: "Buy The Mind!",
+        buyDescription: "Did you enjoy 'The Mind'? Take the game home and enjoy exciting games with your friends and family. Click the button below to purchase it on Amazon.",
+        buyButton: "Buy Game",
+        disclaimer: "Disclaimer",
+        disclaimerText1: "This application has been developed as a personal project without profit motive, aimed at learning and improving web programming and application development skills. It is not intended in any way to commercially compete with the official creators of the board game 'The Mind' nor to infringe on their copyrights.",
+        disclaimerText2: "The content, images, and any other material related to 'The Mind' present on this site are the property of their respective owners and are used solely for illustrative and demonstration purposes. All users are encouraged to purchase the official version of the game through authorized channels to support its creators.",
+        disclaimerText3: "If the copyright owners of the game believe that this site infringes in any way on their rights, please do not hesitate to contact us via the provided email, and we will take the necessary measures to resolve the issue as soon as possible.",
+        cookieConsentText: "We use cookies to enhance your experience on our site. By continuing to browse, you agree to the use of cookies.",
+        cookieConsentButton: "Accept"   
+    },
+    es: {
+        whatIsTheMind: "¿Qué es The Mind?",
+        description: "<strong>The Mind Online</strong> es un juego de cartas cooperativo donde los jugadores deben trabajar juntos para jugar cartas en orden ascendente, ¡sin hablar! Es un desafío que pone a prueba tu sincronización, intuición y trabajo en equipo.",
+        playWithFriends: "<strong>Juega con tus amigos en línea:</strong> Conéctate y disfruta de una experiencia cooperativa única con jugadores de cualquier lugar.",
+        noVerbalCommunication: "<strong>Sin comunicación verbal:</strong> No se permiten palabras ni gestos, ¡todo se basa en la intuición y el sentimiento de equipo!",
+        improveSkills: "<strong>Mejora tus habilidades:</strong> Desarrolla tu capacidad de sincronización y estrategia en cada partida, ¡el reto es constante!",
+        playTitle: "¡Jugar!",
+        playDescription: "Haz clic en el botón de abajo para unirte a una partida o crear una nueva.",
+        startGameButton: "Empezar a Jugar",
+        howToPlay: "¿Cómo Jugar?",
+        rules: "Reglas",
+        rule1: "<strong>Sin Comunicación:</strong> Durante el juego, no está permitido hablar, hacer gestos ni utilizar ningún tipo de señal entre los jugadores.",
+        rule2: "<strong>Jugar las Cartas:</strong> El objetivo es colocar las cartas en la mesa en orden ascendente. Los jugadores deben jugar sus cartas en el momento que consideren adecuado, sin un orden de turno fijo.",
+        rule3: "<strong>Perder Vidas:</strong> Si un jugador coloca una carta fuera de orden, el grupo pierde una vida. Las vidas son limitadas, así que es importante ser estratégico.",
+        rule4: "<strong>Niveles y Avance:</strong> A medida que avanzan, el juego se vuelve más difícil. En cada nivel, los jugadores reciben más cartas, aumentando el reto.",
+        rule5: "<strong>Final del Juego:</strong> La partida termina si el grupo pierde todas sus vidas. ¡El objetivo es avanzar lo más lejos posible sin perderlas!",
+        tutorialVideos: "Videos Tutoriales",
+        tutorialDescription: "Mira los siguientes videos para entender mejor cómo jugar a 'The Mind' y convertirte en un experto:",
+        gameFeatures: "Características del Juego",
+        feature1: "<strong>Juego Cooperativo:</strong> 'The Mind' es un juego donde todos los jugadores trabajan juntos, creando un ambiente de camaradería y diversión para lograr el objetivo común.",
+        feature2: "<strong>Desarrollo de la Intuición:</strong> A medida que avances, mejorarás tu capacidad para captar las señales de tus compañeros, fortaleciendo habilidades sociales y confianza.",
+        feature3: "<strong>Desafío Progresivo:</strong> Con niveles de dificultad crecientes, el juego siempre ofrece nuevos retos que mantienen la experiencia fresca y emocionante.",
+        feature4: "<strong>Alta Rejugabilidad:</strong> Cada partida es única gracias a su naturaleza impredecible, brindando siempre nuevas oportunidades para mejorar.",
+        feature5: "<strong>Accesible para Todos:</strong> Las reglas son sencillas y fáciles de aprender, lo que lo convierte en una opción perfecta para principiantes y jugadores experimentados por igual.",
+        feature6: "<strong>Inmersión Total:</strong> La tensión de jugar en silencio crea una atmósfera única que te mantendrá al borde de tu asiento.",
+        tipsToPlay: "Consejos para jugar",
+        tipDescription: "Para tener éxito en <strong>The Mind</strong>, aquí hay algunos consejos útiles:",
+        tip1: "<strong>Observa a tus compañeros:</strong> Presta atención a las cartas y las reacciones de los demás jugadores para entender su ritmo y evitar errores.",
+        tip2: "<strong>Juega en el momento adecuado:</strong> Sé paciente y espera el momento justo para jugar tu carta. No te apresures, cada decisión cuenta.",
+        tip3: "<strong>Practica la paciencia:</strong> A veces, la mejor estrategia es esperar y dejar que otros jugadores jueguen primero.",
+        tip4: "<strong>Confía en tu intuición:</strong> Sigue tu instinto y la sincronización del grupo para tomar decisiones acertadas.",
+        tip5: "<strong>Colabora en equipo:</strong> Trabaja en conjunto y mejora la comunicación no verbal para alcanzar la victoria como grupo.",
+        buyGame: "¡Compra The Mind!",
+        buyDescription: "¿Te ha gustado 'The Mind'? Llévate el juego a casa y disfruta de partidas emocionantes con tus amigos y familiares. Haz clic en el botón de abajo para adquirirlo en Amazon.",
+        buyButton: "Comprar Juego",
+        disclaimer: "Disclaimer",
+        disclaimerText1: "Esta aplicación ha sido desarrollada como un proyecto personal sin ánimo de lucro, con el propósito de aprender y mejorar habilidades de programación web y desarrollo de aplicaciones. No se pretende, de ninguna forma, competir comercialmente con los creadores oficiales del juego de mesa 'The Mind' ni infringir en sus derechos de autor.",
+        disclaimerText2: "El contenido, imágenes y cualquier otro material relacionado con 'The Mind' presente en este sitio es propiedad de sus respectivos dueños y se usa únicamente con fines ilustrativos y de demostración. Se recomienda a todos los usuarios que compren la versión oficial del juego a través de canales autorizados para apoyar a sus creadores.",
+        disclaimerText3: "Si los propietarios de los derechos del juego consideran que este sitio infringe de alguna manera sus derechos, por favor no duden en ponerse en contacto a través del correo electrónico proporcionado, y tomaremos las medidas necesarias para solucionar el problema lo antes posible.",
+        cookieConsentText: "Usamos cookies para mejorar tu experiencia en nuestro sitio. Al continuar navegando, aceptas el uso de cookies.",
+        cookieConsentButton: "Aceptar"   
+    }
+};
+
+window.onload = function() {
+    // Comprobar si hay un idioma guardado en localStorage
+    const savedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Default to Spanish
+
+    // Cambiar el idioma a lo guardado en localStorage
+    changeLanguage(savedLanguage);
+};
+
+function changeLanguage(language) {
+    // Guardar el idioma en localStorage
+    localStorage.setItem('selectedLanguage', language);
+
+    document.getElementById('what-is-the-mind').textContent = translations[language].whatIsTheMind;
+    document.getElementById('description').innerHTML = translations[language].description;
+    document.getElementById('play-with-friends').innerHTML = translations[language].playWithFriends;
+    document.getElementById('no-verbal-communication').innerHTML = translations[language].noVerbalCommunication;
+    document.getElementById('improve-skills').innerHTML = translations[language].improveSkills;
+
+    // Nuevas traducciones para la sección "¡Jugar!"
+    document.getElementById('play-title').textContent = translations[language].playTitle;
+    document.getElementById('play-description').textContent = translations[language].playDescription;
+    document.getElementById('startGame').textContent = translations[language].startGameButton;
+
+    // Sección "¿Qué es The Mind?"
+    document.getElementById('what-is-the-mind').textContent = translations[language].whatIsTheMind;
+    document.getElementById('description').innerHTML = translations[language].description;
+    document.getElementById('play-with-friends').innerHTML = translations[language].playWithFriends;
+    document.getElementById('no-verbal-communication').innerHTML = translations[language].noVerbalCommunication;
+    document.getElementById('improve-skills').innerHTML = translations[language].improveSkills;
+
+    // Sección "¡Jugar!"
+    document.getElementById('play-title1').textContent = translations[language].playTitle;
+    document.getElementById('play-description1').textContent = translations[language].playDescription;
+    document.getElementById('startGame1').textContent = translations[language].startGameButton;
+
+    // Sección "¿Cómo Jugar?"
+    document.getElementById('how-to-play').textContent = translations[language].howToPlay;
+    document.getElementById('rules-title').textContent = translations[language].rules;
+    document.getElementById('rule1').innerHTML = translations[language].rule1;
+    document.getElementById('rule2').innerHTML = translations[language].rule2;
+    document.getElementById('rule3').innerHTML = translations[language].rule3;
+    document.getElementById('rule4').innerHTML = translations[language].rule4;
+    document.getElementById('rule5').innerHTML = translations[language].rule5;
+    document.getElementById('tutorial-videos').textContent = translations[language].tutorialVideos;
+    document.getElementById('tutorial-description').textContent = translations[language].tutorialDescription;
+
+    // Sección "Características del Juego"
+    document.getElementById('game-features').textContent = translations[language].gameFeatures;
+    document.getElementById('feature1').innerHTML = translations[language].feature1;
+    document.getElementById('feature2').innerHTML = translations[language].feature2;
+    document.getElementById('feature3').innerHTML = translations[language].feature3;
+    document.getElementById('feature4').innerHTML = translations[language].feature4;
+    document.getElementById('feature5').innerHTML = translations[language].feature5;
+    document.getElementById('feature6').innerHTML = translations[language].feature6;
+
+    // Sección "Consejos para jugar"
+    document.getElementById('tips-to-play').textContent = translations[language].tipsToPlay;
+    document.getElementById('tip-description').innerHTML = translations[language].tipDescription;
+    document.getElementById('tip1').innerHTML = translations[language].tip1;
+    document.getElementById('tip2').innerHTML = translations[language].tip2;
+    document.getElementById('tip3').innerHTML = translations[language].tip3;
+    document.getElementById('tip4').innerHTML = translations[language].tip4;
+    document.getElementById('tip5').innerHTML = translations[language].tip5;
+    
+    // Sección "¡Compra The Mind!"
+    document.getElementById('comprar').querySelector('h2').textContent = translations[language].buyGame;
+    document.getElementById('comprar').querySelector('p').textContent = translations[language].buyDescription;
+    document.querySelector('#comprar .btn-warning').textContent = translations[language].buyButton;
+
+    // Sección "Disclaimer"
+    document.getElementById('disclaimer').querySelector('h2').textContent = translations[language].disclaimer;
+    const disclaimerParagraphs = document.getElementById('disclaimer').querySelectorAll('p');
+    disclaimerParagraphs[0].textContent = translations[language].disclaimerText1;
+    disclaimerParagraphs[1].textContent = translations[language].disclaimerText2;
+    disclaimerParagraphs[2].textContent = translations[language].disclaimerText3;
+
+    // Sección "Consentimiento de cookies"
+    document.getElementById('cookieConsent').querySelector('p').textContent = translations[language].cookieConsentText;
+    document.getElementById('acceptCookies').textContent = translations[language].cookieConsentButton;
+}
+
+
     </script>
 </body>
 
