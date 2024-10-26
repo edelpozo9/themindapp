@@ -11,54 +11,149 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3193233439020853"
-     crossorigin="anonymous"></script>
-     <link rel="icon" href="icono.png" type="image/png">
+        crossorigin="anonymous"></script>
+    <link rel="icon" href="icono.png" type="image/png">
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGQV29RSQ4"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'G-XGQV29RSQ4');
+    gtag('config', 'G-XGQV29RSQ4');
 </script>
+
 <body>
     <div id="header-container"></div> <!-- Contenedor para el encabezado -->
 
     <main class="container mt-4 text-center">
-        <h2>¿Cómo quieres jugar?</h2>
+        <h2 id="how-to-play-title">¿Cómo quieres jugar?</h2>
 
         <section>
-            <p>¿Quieres crear una nueva partida o unirte a una existente?</p>
+            <p id="game-options-text">¿Quieres crear una nueva partida o unirte a una existente?</p>
             <div class="d-flex flex-column flex-sm-row justify-content-center">
                 <button style="background-color: #42a5f5; color: white; border: none;"
                     class="btn btn-lg mb-2 mb-sm-0 me-sm-2" id="crearPartida"
                     onmouseover="this.style.backgroundColor='#0056b3'"
-                    onmouseout="this.style.backgroundColor='#42a5f5'">Crear una Partida</button>
+                    onmouseout="this.style.backgroundColor='#42a5f5'">
+                    Crear una Partida
+                </button>
                 <button class="btn btn-secondary btn-lg" id="unirsePartida">Unirse a una Partida</button>
             </div>
         </section>
     </main>
+
     <div id="footer-container"></div> <!-- Contenedor para el pie de página -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="app.js"></script>
     <script>
-        // Cargar el encabezado desde header.html
-        fetch('header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-container').innerHTML = data;
-            })
-            .catch(error => console.error('Error al cargar el encabezado:', error));
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLanguage = localStorage.getItem('language') || 'es'; // Idioma por defecto
 
-        // Cargar el pie de página desde footer.html
-        fetch('footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-container').innerHTML = data;
-            })
-            .catch(error => console.error('Error al cargar el pie de página:', error));
+            // Cargar el encabezado desde header.html
+            fetch("header.html")
+                .then((response) => response.text())
+                .then((data) => {
+                    document.getElementById("header-container").innerHTML = data;
+                    translateHeader(savedLanguage);
+                })
+                .catch((error) => console.error("Error al cargar el encabezado:", error));
+
+            // Cargar el pie de página desde footer.html
+            fetch("footer.html")
+                .then((response) => response.text())
+                .then((data) => {
+                    document.getElementById("footer-container").innerHTML = data;
+                    translateFooter(savedLanguage);
+                })
+                .catch((error) => console.error("Error al cargar el pie de página:", error));
+
+            // Traducir el contenido principal de la página
+            translateGamePage(savedLanguage);
+
+            // Configurar los eventos para cambiar el idioma
+            document.querySelectorAll('.language-selector').forEach(button => {
+                button.addEventListener('click', function () {
+                    const language = this.getAttribute('data-language');
+                    changeLanguage(language);
+                });
+            });
+        });
+
+        function changeLanguage(language) {
+            localStorage.setItem('language', language);
+            translateHeader(language);
+            translateFooter(language);
+            translateGamePage(language); // Esto también traduce la página principal
+        }
+
+        const translations = {
+            en: {
+                howToPlay: "How do you want to play?",
+                gameOptions: "Do you want to create a new game or join an existing one?",
+                createGame: "Create a Game",
+                joinGame: "Join a Game",
+                title: "The Mind Online",
+                rules: "Rules",
+                info: "Information",
+                play: "Play",
+                buyGame: "Buy Game",
+                contact: "Contact",
+                email: "themindgameonline@gmail.com",
+                copyright: "&copy; 2024 The Mind. Non-profit project."
+            },
+            es: {
+                howToPlay: "¿Cómo quieres jugar?",
+                gameOptions: "¿Quieres crear una nueva partida o unirte a una existente?",
+                createGame: "Crear una Partida",
+                joinGame: "Unirse a una Partida",
+                title: "The Mind Online",
+                rules: "Reglas",
+                info: "Información",
+                play: "Jugar",
+                buyGame: "Comprar Juego",
+                contact: "Contacto",
+                email: "themindgameonline@gmail.com",
+                copyright: "&copy; 2024 The Mind. Proyecto sin ánimo de lucro."
+            }
+        };
+
+        function translateGamePage(language) {
+            document.getElementById('how-to-play-title').innerHTML = translations[language].howToPlay;
+            document.getElementById('game-options-text').innerHTML = translations[language].gameOptions;
+            document.getElementById('crearPartida').innerHTML = translations[language].createGame;
+            document.getElementById('unirsePartida').innerHTML = translations[language].joinGame;
+        }
+
+        function translateHeader(language) {
+            document.getElementById('header-title').innerHTML = translations[language].title;
+            document.getElementById('header-rules').innerHTML = translations[language].rules;
+            document.getElementById('header-info').innerHTML = translations[language].info;
+            document.getElementById('header-play').innerHTML = translations[language].play;
+            document.getElementById('header-buy-game').innerHTML = translations[language].buyGame;
+        }
+
+        function translateFooter(language) {
+            const footer = {
+                play: document.getElementById('footer-play'),
+                contact: document.getElementById('footer-contact'),
+                email: document.getElementById('footer-email'),
+                buy: document.getElementById('footer-buy'),
+                copyright: document.getElementById('footer-copyright')
+            };
+
+            footer.play.innerHTML = translations[language].play;
+            footer.contact.innerHTML = translations[language].contact;
+            footer.email.innerHTML = translations[language].email;
+            footer.buy.innerHTML = translations[language].buyGame;
+            footer.copyright.innerHTML = translations[language].copyright;
+        }
+
+
+
+
+
 
         // Lógica para crear una nueva partida
         document.getElementById('crearPartida').addEventListener('click', function () {
@@ -93,6 +188,7 @@
                 window.location.href = 'unirse_partida.html'; // Redirigir a la página para unirse a una partida
             });
         });
+
     </script>
 </body>
 

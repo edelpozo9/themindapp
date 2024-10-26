@@ -451,7 +451,7 @@
 
         window.onload = function () {
             // Comprobar si hay un idioma guardado en localStorage
-            const savedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Default to Spanish
+            const savedLanguage = localStorage.getItem('language') || 'es'; // Default to Spanish
 
             // Cambiar el idioma a lo guardado en localStorage
             changeLanguage(savedLanguage);
@@ -483,7 +483,7 @@
 
         function changeLanguage(language) {
             // Guardar el idioma en localStorage
-            localStorage.setItem('selectedLanguage', language);
+            localStorage.setItem('language', language);
             translateFooter(language);
             translateHeader(language);
 
