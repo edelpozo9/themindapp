@@ -9,38 +9,41 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3193233439020853"
-     crossorigin="anonymous"></script>
-     <link rel="icon" href="icono.png" type="image/png">
+        crossorigin="anonymous"></script>
+    <link rel="icon" href="icono.png" type="image/png">
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGQV29RSQ4"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'G-XGQV29RSQ4');
+    gtag('config', 'G-XGQV29RSQ4');
 </script>
+
 <body>
     <div id="header-container"></div> <!-- Contenedor para el encabezado -->
 
     <main class="container mt-4">
-        <h2 class="text-center">Crear Nueva Partida</h2>
-        <p class="text-center">Configura los detalles de la nueva partida a continuación:</p>
+        <h2 class="text-center" id="create-new-game-title">Crear Nueva Partida</h2>
+        <p class="text-center" id="game-setup-text">Configura los detalles de la nueva partida a continuación:</p>
 
-        <div class="card mx-auto" style="max-width: 400px;"> <!-- Ajustar el ancho máximo -->
+        <div class="card mx-auto" style="max-width: 400px;">
             <div class="card-body">
                 <form id="crearPartidaForm">
                     <div class="mb-3">
-                        <label for="nombreUsuario" class="form-label">Nombre de Usuario:</label>
+                        <label for="nombreUsuario" class="form-label" id="username-label">Nombre de Usuario:</label>
                         <input type="text" class="form-control" id="nombreUsuario" required maxlength="12">
                     </div>
                     <div class="mb-3">
-                        <label for="nombrePartida" class="form-label">Nombre de la Partida:</label>
-                        <input type="text" class="form-control" id="nombrePartida" required minlength="3" maxlength="12">
+                        <label for="nombrePartida" class="form-label" id="game-name-label">Nombre de la Partida:</label>
+                        <input type="text" class="form-control" id="nombrePartida" required minlength="3"
+                            maxlength="12">
                     </div>
                     <div class="mb-3">
-                        <label for="numJugadores" class="form-label">Número de Jugadores:</label>
+                        <label for="numJugadores" class="form-label" id="player-number-label">Número de
+                            Jugadores:</label>
                         <select class="form-select" id="numJugadores" required>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -54,22 +57,21 @@
                         </select>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-success" id="startGame">Crear Partida</button>
+                        <button type="submit" class="btn btn-success" id="start-game-btn">Crear Partida</button>
                     </div>
                 </form>
             </div>
         </div>
-
     </main>
 
     <div id="footer-container"></div> <!-- Contenedor para el pie de página -->
-    
+
     <!-- Modal de Alerta -->
     <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">!Error¡</h5>
+                    <h5 class="modal-title" id="errorModalLabel">Error</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="errorModalMessage">
@@ -81,26 +83,63 @@
             </div>
         </div>
     </div>
+
+
     <script src="/socket.io/socket.io.js"></script> <!-- Incluir Socket.IO -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
     <script>
 
-        // Cargar el encabezado desde header.html
-        fetch('header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-container').innerHTML = data;
-            })
-            .catch(error => console.error('Error al cargar el encabezado:', error));
+        document.addEventListener("DOMContentLoaded", function () {
+            // Cargar el encabezado desde header.html
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Idioma por defecto
 
-        // Cargar el pie de página desde footer.html
-        fetch('footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-container').innerHTML = data;
-            })
-            .catch(error => console.error('Error al cargar el pie de página:', error));
+            fetch("header.html")
+                .then((response) => response.text())
+                .then((data) => {
+                    document.getElementById("header-container").innerHTML = data;
+                    translateHeader(savedLanguage);
+                })
+                .catch((error) => console.error("Error al cargar el encabezado:", error));
+
+            // Traducir el contenido principal de la página
+            translateCreateGamePage(savedLanguage);
+
+            // Cargar el pie de página desde footer.html
+            fetch("footer.html")
+                .then((response) => response.text())
+                .then((data) => {
+                    document.getElementById("footer-container").innerHTML = data;
+                    translateFooter(savedLanguage);
+                })
+                .catch((error) => console.error("Error al cargar el pie de página:", error));
+
+            // Configurar los eventos para cambiar el idioma
+            document.querySelectorAll('.language-selector').forEach(button => {
+                button.addEventListener('click', function () {
+                    const language = this.getAttribute('data-language');
+                    changeLanguage(language);
+                });
+            });
+        });
+
+
+        // Al cargar la página, verificar si el usuario ya ha aceptado las cookies
+        window.onload = function () {
+            const cookieConsent = document.getElementById('cookieConsent');
+
+            // Verifica en localStorage si el usuario ya ha aceptado las cookies
+            if (!localStorage.getItem('cookiesAccepted')) {
+                // Si no ha aceptado, mostrar el mensaje
+                cookieConsent.style.display = 'flex'; // Cambiar a 'flex' para que aplique el estilo
+            }
+
+            // Comprobar si hay un idioma guardado en localStorage
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Default to Spanish
+
+            // Cambiar el idioma a lo guardado en localStorage
+            changeLanguage(savedLanguage);
+        };
 
         // Lógica para iniciar la partida
         document.getElementById('crearPartidaForm').addEventListener('submit', function (event) {
@@ -128,12 +167,115 @@
         });
 
         socket.on("errorCrearPartida", ({ mensaje }) => {
+            const selectedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Idioma por defecto
+            // Encontrar la posición del inicio y fin de nombrePartidaExistente
+            const partidaStartIndex = mensaje.indexOf(": ") + 2; // Posición justo después de ": "
+            const partidaEndIndex = mensaje.indexOf(".", partidaStartIndex); // Posición del punto después del nombre de la partida
+
+            // Extraer nombrePartidaExistente usando substring
+            const nombrePartidaExistente = mensaje.substring(partidaStartIndex, partidaEndIndex);
+
+            // Crear el mensaje utilizando las variables extraídas
+            const errorMessage = `${translations[selectedLanguage].errorCrearYaEnPartida} ${nombrePartidaExistente}`;
             // Establecer el mensaje en el cuerpo del modal
-            document.getElementById('errorModalMessage').innerText = mensaje;
+            document.getElementById('errorModalMessage').innerText = errorMessage;
+
             // Mostrar el modal de error
             const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
             errorModal.show();
         });
+        
+        socket.on("errorPartidaExiste", ({ mensaje }) => {
+            const selectedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Idioma por defecto
+            // Establecer el mensaje en el cuerpo del modal
+            document.getElementById('errorModalMessage').innerText = translations[selectedLanguage].yaExistePartida;
+            // Mostrar el modal de error
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        });
+
+        function changeLanguage(language) {
+            localStorage.setItem('selectedLanguage', language);
+            translateHeader(language);
+            translateFooter(language);
+            translateCreateGamePage(language);
+        }
+
+        const translations = {
+            en: {
+                createNewGame: "Create New Game",
+                gameSetup: "Set up the details of the new game below:",
+                usernameLabel: "Username:",
+                gameNameLabel: "Game Name:",
+                playerNumberLabel: "Number of Players:",
+                startGameBtn: "Create Game",
+                title: "The Mind Online",
+                rules: "Rules",
+                info: "Information",
+                play: "Play",
+                buyGame: "Buy Game",
+                contact: "Contact",
+                email: "themindgameonline@gmail.com",
+                copyright: "&copy; 2024 The Mind. Non-profit project.",
+                yaExistePartida: 'There is already a game with that name.',
+                errorCrearYaEnPartida: 'Error creating game. You are already in the game:'
+            },
+            es: {
+                createNewGame: "Crear Nueva Partida",
+                gameSetup: "Configura los detalles de la nueva partida a continuación:",
+                usernameLabel: "Nombre de Usuario:",
+                gameNameLabel: "Nombre de la Partida:",
+                playerNumberLabel: "Número de Jugadores:",
+                startGameBtn: "Crear Partida",
+                title: "The Mind Online",
+                rules: "Reglas",
+                info: "Información",
+                play: "Jugar",
+                buyGame: "Comprar Juego",
+                contact: "Contacto",
+                email: "themindgameonline@gmail.com",
+                copyright: "&copy; 2024 The Mind. Proyecto sin ánimo de lucro.",
+                yaExistePartida: 'Ya existe una partida con ese nombre.',
+                errorCrearYaEnPartida: 'Error al crear la partida. Ya estás en la partida: '
+            }
+        };
+
+        function translateCreateGamePage(language) {
+            // Guardar el idioma en localStorage
+            localStorage.setItem('selectedLanguage', language);
+
+            document.getElementById('create-new-game-title').innerHTML = translations[language].createNewGame;
+            document.getElementById('game-setup-text').innerHTML = translations[language].gameSetup;
+            document.getElementById('username-label').innerHTML = translations[language].usernameLabel;
+            document.getElementById('game-name-label').innerHTML = translations[language].gameNameLabel;
+            document.getElementById('player-number-label').innerHTML = translations[language].playerNumberLabel;
+            document.getElementById('start-game-btn').innerHTML = translations[language].startGameBtn;
+        }
+
+        function translateHeader(language) {
+            document.getElementById('header-title').innerHTML = translations[language].title;
+            document.getElementById('header-rules').innerHTML = translations[language].rules;
+            document.getElementById('header-info').innerHTML = translations[language].info;
+            document.getElementById('header-play').innerHTML = translations[language].play;
+            document.getElementById('header-buy-game').innerHTML = translations[language].buyGame;
+        }
+
+        function translateFooter(language) {
+            const footer = {
+                play: document.getElementById('footer-play'),
+                contact: document.getElementById('footer-contact'),
+                email: document.getElementById('footer-email'),
+                buy: document.getElementById('footer-buy'),
+                copyright: document.getElementById('footer-copyright')
+            };
+
+            footer.play.innerHTML = translations[language].play;
+            footer.contact.innerHTML = translations[language].contact;
+            footer.email.innerHTML = translations[language].email;
+            footer.buy.innerHTML = translations[language].buyGame;
+            footer.copyright.innerHTML = translations[language].copyright;
+        }
+
     </script>
 </body>
 

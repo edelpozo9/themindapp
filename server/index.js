@@ -40,7 +40,7 @@ io.on("connection", (socket) => {
         mensaje: `Error al crear la partida. Ya estás en la partida: ${nombrePartidaExistente}. `,
       });
     } else if (partidas[nombrePartida]) {
-      socket.emit("errorCrearPartida", {
+      socket.emit("errorPartidaExiste", {
         mensaje: "Ya existe una partida con ese nombre.",
       });
     } else {
@@ -92,7 +92,7 @@ io.on("connection", (socket) => {
 
       if (nombrePartidaActual !== nombrePartida) {
         // Si el nombre de la partida actual es diferente de la que se intenta unir
-        socket.emit("errorUnirsePartida", {
+        socket.emit("errorYaEstasEnPartida", {
           mensaje: `Ya estás en la partida: ${nombrePartidaActual}. No puedes unirte a otra.`,
         });
         return; // Salir de la función si ya está en una partida diferente
@@ -138,10 +138,11 @@ io.on("connection", (socket) => {
         // Emitir las cartas que ya tiene el jugador
         const cartasJugador = partida.jugadores[userId].cartasDelJugador;
         socket.emit("asignarCartas", cartasJugador);
+
       } else {
         // Verificar si la partida ya está llena
         if (Object.keys(partida.jugadores).length >= partida.numJugadores) {
-          socket.emit("errorUnirsePartida", {
+          socket.emit("partidaLlena", {
             mensaje: "La partida ya está llena.",
           });
         } else {
@@ -190,7 +191,7 @@ io.on("connection", (socket) => {
         }
       }
     } else {
-      socket.emit("errorUnirsePartida", {
+      socket.emit("errorNoExiste", {
         mensaje: "La partida no existe.",
       });
     }
@@ -277,7 +278,6 @@ io.on("connection", (socket) => {
       nombreUsuario: jugador.nombreUsuario,
       carta: cartaJugada,
     });
-    
 
     // Emitir las cartas que ya tiene el jugador
     const cartasJugador = partida.jugadores[userId].cartasDelJugador;
