@@ -38,7 +38,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="nombrePartida" class="form-label" id="game-name-label">Nombre de la Partida:</label>
-                        <input type="text" class="form-control" id="nombrePartida" required minlength="3" maxlength="12">
+                        <input type="text" class="form-control" id="nombrePartida" required minlength="3"
+                            maxlength="12">
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-success" id="join-game-btn">Unirse a la Partida</button>
@@ -70,7 +71,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
     <script>
- document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             // Cargar el encabezado desde header.html
             fetch("header.html")
                 .then((response) => response.text())
@@ -90,11 +91,13 @@
                     translateFooter(savedLanguage);
                 })
                 .catch((error) => console.error("Error al cargar el pie de página:", error));
-        });
-        window.onload = function () {
+
+            // Traducir contenido de la página
             const savedLanguage = localStorage.getItem('language') || 'es';
-            changeLanguage(savedLanguage);
-        };
+            translateJoinGamePage(savedLanguage);
+        });
+
+     
         function changeLanguage(language) {
             localStorage.setItem('language', language);
             translateHeader(language);
@@ -102,7 +105,7 @@
             translateJoinGamePage(language);
         }
 
-        
+
 
         const translations = {
             en: {
@@ -169,7 +172,7 @@
             footer.copyright.innerHTML = translations[language].copyright;
         }
 
-       
+
 
         // Lógica para unirse a la partida
         document.getElementById('unirsePartidaForm').addEventListener('submit', function (event) {

@@ -88,7 +88,7 @@
     <script src="app.js"></script>
     <script>
 
-        document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
             // Cargar el encabezado desde header.html
             fetch("header.html")
                 .then((response) => response.text())
@@ -108,21 +108,18 @@
                     translateFooter(savedLanguage);
                 })
                 .catch((error) => console.error("Error al cargar el pie de página:", error));
+
+            // Traducir contenido de la página
+            const savedLanguage = localStorage.getItem('language') || 'es';
+            translateCreateGamePage(savedLanguage);
         });
 
-
-        window.onload = function () {
-            const savedLanguage = localStorage.getItem('language') || 'es';
-            changeLanguage(savedLanguage);
-        };
-        
         function changeLanguage(language) {
             localStorage.setItem('language', language);
             translateHeader(language);
             translateFooter(language);
             translateCreateGamePage(language);
         }
-
 
         const translations = {
             en: {
@@ -192,7 +189,36 @@
             footer.copyright.innerHTML = translations[language].copyright;
         }
 
+        // Lógica para iniciar la partida
+        document.getElementById('crearPartidaForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const nombrePartida = document.getElementById('nombrePartida').value;
+            const numJugadores = document.getElementById('numJugadores').value;
+            const nombreUsuario = document.getElementById('nombreUsuario').value;
 
+            // Emitir el evento para crear la partida al servidor
+            socket.emit('crearPartida', nombrePartida, numJugadores, nombreUsuario);
+        });
+
+        // Manejar el evento de respuesta de creación de partida
+        socket.on('partidaCreada', (data) => {
+            const nombrePartida = data.nombrePartida;
+            const nombreUsuario = data.nombreUsuario; // Asegúrate de enviar también el nombreUsuario desde el servidor
+
+            // Guardar el nombreUsuario en localStorage
+            localStorage.setItem('nombreUsuario', nombreUsuario);
+
+            // Redirigir a la sala de la partida
+            window.location.href = `sala.html?nombre=${data.nombrePartida}`; // Cambia esto a la URL de la sala con el nombre
+        });
+
+        socket.on("errorCrearPartida", ({ mensaje }) => {
+            // Establecer el mensaje en el cuerpo del modal
+            document.getElementById('errorModalMessage').innerText = mensaje;
+            // Mostrar el modal de error
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        });
 
 
         // Lógica para iniciar la partida

@@ -211,28 +211,31 @@
         const nombrePartida = params.nombre;
         const nombreUsuario = localStorage.getItem('nombreUsuario'); // Recuperar el nombreUsuario desde localStorage
 
-// Cargar el encabezado desde header.html
-        fetch("header.html")
-            .then((response) => response.text())
-            .then((data) => {
-                document.getElementById("header-container").innerHTML = data;
-                const savedLanguage = localStorage.getItem('language') || 'es';
-                translateHeader(savedLanguage);
-            })
-            .catch((error) => console.error("Error al cargar el encabezado:", error));
+        // Cargar el encabezado desde header.html¡
+            fetch("header.html")
+                .then((response) => response.text())
+                .then((data) => {
+                    document.getElementById("header-container").innerHTML = data;
+                    const savedLanguage = localStorage.getItem('language') || 'es';
+                    translateHeader(savedLanguage);
+                })
+                .catch((error) => console.error("Error al cargar el encabezado:", error));
 
-
-            window.onload = function () {
+            // Traducir contenido de la página
+            const savedLanguage = localStorage.getItem('language') || 'es';
+            translateJoinGamePage(savedLanguage);
+ 
+        window.onload = function () {
             const savedLanguage = localStorage.getItem('language') || 'es';
             changeLanguage(savedLanguage);
         };
         function changeLanguage(language) {
             localStorage.setItem('language', language);
             translateHeader(language);
-            translateRoomPage(language);
+            translateJoinGamePage(language);
         }
 
-       
+
 
         const translations = {
             en: {
@@ -282,7 +285,7 @@
                 copyright: "&copy; 2024 The Mind. Proyecto sin ánimo de lucro."
             }
         };
-        function translateRoomPage(language) {
+        function translateJoinGamePage(language) {
             document.getElementById('tituloSala').innerHTML = translations[language].roomTitle;
             document.getElementById('zonaRondaPartida').innerHTML = translations[language].gameSectionTitle;
             document.getElementById('noCartasMsg').innerHTML = translations[language].noCardsPlayed;
@@ -306,7 +309,7 @@
             document.getElementById('header-buy-game').innerHTML = translations[language].buyGame;
         }
 
-        
+
         // Unirse a la partida
         socket.emit('unirsePartida', nombrePartida, nombreUsuario);
 
