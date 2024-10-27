@@ -495,6 +495,7 @@ io.on("connection", (socket) => {
         // Si ya no hay jugadores en la partida, puedes eliminar la partida opcionalmente
         if (Object.keys(partida.jugadores).length === 0) {
           delete partidas[nombrePartida];
+          console.log(`Partida "${nombrePartida}" eliminada.`);
         }
 
         break; // Rompemos el bucle porque ya encontramos y eliminamos al jugador
