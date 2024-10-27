@@ -67,8 +67,8 @@ io.on("connection", (socket) => {
 
       // Programa la eliminación de la partida después de 1 hora (3600000 ms)
       setTimeout(() => {
-        // Llamar al evento de 'dejarPartida' pasando el nombre de la partida      
-          delete partidas[nombrePartida];        
+        // Llamar al evento de 'dejarPartida' pasando el nombre de la partida
+        delete partidas[nombrePartida];
         console.log(`Partida "${nombrePartida}" eliminada después de 4 horas.`);
       }, 14400000);
 
@@ -266,7 +266,7 @@ io.on("connection", (socket) => {
     }
 
     // Remover la carta jugada del jugador
-    const cartaIndex = jugador.cartasDelJugador.indexOf(cartaJugada);
+    const cartaIndex = jugador.cartasDelJugador.indexOf(Number(cartaJugada));
     if (cartaIndex !== -1) {
       jugador.cartasDelJugador.splice(cartaIndex, 1); // Eliminar la carta de las cartas del jugador
     }
@@ -277,6 +277,11 @@ io.on("connection", (socket) => {
       nombreUsuario: jugador.nombreUsuario,
       carta: cartaJugada,
     });
+    
+
+    // Emitir las cartas que ya tiene el jugador
+    const cartasJugador = partida.jugadores[userId].cartasDelJugador;
+    socket.emit("asignarCartas", cartasJugador);
 
     // Emitir 'cartasJugadas' a todos los jugadores de la partida
     io.to(nombrePartida).emit(
