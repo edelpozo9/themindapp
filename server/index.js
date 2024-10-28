@@ -7,17 +7,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Emitir la lista actualizada de jugadores y el nombre de la partida
-const jugadores = Object.values(partida.jugadores).map((jugador) => ({
-  userId: jugador.userId,
-  nombreUsuario: jugador.nombreUsuario,
-}));
-// Emitir la lista actualizada de jugadores a todos los jugadores de la partida
-io.emit("actualizarJugadores", {
-  jugadores,
-  nombrePartida,
-  numJugadores: partida.numJugadores,
-  reiniciarRonda: partida.estadoJuego.reiniciarRonda,
+// Redirige todas las peticiones a HTTPS
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
 });
 
 // Sirve archivos estáticos
