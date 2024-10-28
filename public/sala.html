@@ -327,19 +327,30 @@
         });
 
         // Escuchar el evento de estado de la partida
-        socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, siguienteRonda, reiniciarRonda }) => {
+        socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, siguienteRonda, reiniciarRonda, vidas }) => {
             const btnIniciarPartida = document.getElementById('btnIniciarPartida');
             const btnIniciarRonda = document.getElementById('btnIniciarRonda');
             const btnReiniciarRonda = document.getElementById('btnReiniciarRonda');
             const selectedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Idioma por defecto
-            if (reiniciarRonda) {
+
+            actualizarContadorVidas(vidas);
+
+            if (vidas === 0) {
+                // Mostrar Iniciar Partida
+                btnIniciarPartida.style.display = 'inline-block';
+                btnIniciarRonda.style.display = 'none';
+                btnIniciarRonda.disabled = true;
+
+                btnReiniciarRonda.style.display = 'none';
+                btnReiniciarRonda.disabled = true;
+            } else if (reiniciarRonda) {
                 // Mostrar el botón de reiniciar ronda y ocultar los otros
                 btnReiniciarRonda.style.display = 'inline-block';
                 btnReiniciarRonda.disabled = true;
                 btnIniciarPartida.style.display = 'none';
                 btnIniciarRonda.style.display = 'none';
-            } else if (rondaActual === 0) {
-                // La partida aún no ha comenzado
+            } else if (rondaActual === 0 ) {
+                // La partida aún no ha comenzado: Mostrar Iniciar Partida
                 btnIniciarPartida.style.display = 'inline-block';
                 btnIniciarRonda.style.display = 'none';
                 btnIniciarRonda.disabled = true;
@@ -462,6 +473,30 @@
             errorModal.show();
         });
 
+        socket.on("errorJugarCartaFinPartida", ({ mensaje }) => {
+            const selectedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Idioma por defecto
+
+
+            // Encontrar las posiciones de "La carta" y "jugada por"
+            const cartaStartIndex = mensaje.indexOf("La carta ") + "La carta ".length; // Posición justo después de "La carta "
+            const jugadorStartIndex = mensaje.indexOf("jugada por ") + "jugada por ".length; // Posición justo después de "jugada por "
+
+            // Extraer cartaJugada y jugadorNombre usando substring
+            const cartaJugada = mensaje.substring(cartaStartIndex, mensaje.indexOf(" ", cartaStartIndex));
+            const jugadorNombre = mensaje.substring(jugadorStartIndex, mensaje.indexOf(" ha sido", jugadorStartIndex));
+
+            // Crear el mensaje utilizando las variables extraídas
+            const errorMessage = `${translations[selectedLanguage].laCarta} ${cartaJugada} ${translations[selectedLanguage].jugadaPor} ${jugadorNombre} ${translations[selectedLanguage].msgOrdenIncorrectoFinPartida}`;
+
+
+            // Establecer el mensaje en el cuerpo del modal
+            document.getElementById('errorModalMessage').innerText = errorMessage;
+            document.getElementById('errorModalLabel').innerText = translations[selectedLanguage].ordenInc;
+            // Mostrar el modal de error
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        });
+
         socket.on("rondaSuperada", ({ mensaje }) => {
             const selectedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Idioma por defecto
 
@@ -483,6 +518,22 @@
             const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
             errorModal.show();
         });
+
+        function actualizarContadorVidas(vidas) {
+            const contadorVidas = document.getElementById('contadorVidas');
+            contadorVidas.innerHTML = ''; // Limpiar el contenido previo
+
+            // Añadir los iconos de vida según la cantidad de vidas
+            for (let i = 0; i < vidas; i++) {
+                const img = document.createElement('img');
+                img.src = 'vida.png'; // Ruta del icono de vida
+                img.alt = 'Vida';
+                img.className = 'vida-icon'; // Puedes aplicar estilos específicos si lo deseas
+                img.style.width = '24px'; // Ajustar tamaño según necesites
+                img.style.height = '24px'; // Ajustar tamaño según necesites
+                contadorVidas.appendChild(img); // Añadir el icono al contenedor
+            }
+        }
 
         function changeLanguage(language) {
             localStorage.setItem('selectedLanguage', language);
@@ -524,7 +575,9 @@
                 avanzRonda: 'Advance to the next round.',
                 laCarta: 'The card ',
                 jugadaPor: ' played by ',
-                msgOrdenIncorrecto: 'has been played in the wrong order. Please try again.'
+                msgOrdenIncorrecto: 'has been played in the wrong order. Please try again.',
+                msgOrdenIncorrectoFinPartida: 'has been played in the wrong order. You have no life left. Game Over.',
+                vidasCont: 'Lifes'
             },
             es: {
                 roomTitle: "Sala de Juego",
@@ -558,7 +611,9 @@
                 avanzRonda: 'Avanzad a la siguiente ronda.',
                 laCarta: 'La carta ',
                 jugadaPor: ' jugada por ',
-                msgOrdenIncorrecto: 'ha sido jugada en orden incorrecto. Volved a intentarlo.'
+                msgOrdenIncorrecto: 'ha sido jugada en orden incorrecto. Volved a intentarlo.',
+                msgOrdenIncorrectoFinPartida: 'ha sido jugada en orden incorrecto. No os quedan vida. Fin de la Partida.',
+                vidasCont: 'Vidas'
             }
         };
 
