@@ -321,7 +321,9 @@
 
         // Agregar evento al botón para iniciar la partida
         document.getElementById('btnIniciarPartida').addEventListener('click', function () {
+            const btnIniciarPartida = document.getElementById('btnIniciarPartida');
             socket.emit('iniciarPartida', nombrePartida);
+            btnIniciarPartida.disabled = true;
         });
 
         // Escuchar el evento de estado de la partida
