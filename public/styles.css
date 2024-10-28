@@ -258,3 +258,6 @@ nav .nav-link:hover {
         padding: 8px 16px; /* Espaciado interno */
     }
 }
+.vida-icon {
+    margin: 5px; /* Espacio entre los iconos */
+}
