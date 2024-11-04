@@ -258,6 +258,12 @@ nav .nav-link:hover {
         padding: 8px 16px; /* Espaciado interno */
     }
 }
+#contadorVidas {
+    display: flex;
+    flex-wrap: wrap; /* Permitir que los corazones se ajusten en varias filas si es necesario */    
+    gap: 5px; /* Espacio entre los iconos */
+    overflow: hidden; /* Evitar que los iconos se desborden */
+}
 .vida-icon, .estrella-icon {
 
     margin: 5px;
