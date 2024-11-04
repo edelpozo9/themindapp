@@ -8,12 +8,12 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 // // Redirige todas las peticiones a HTTPS
-// app.use((req, res, next) => {
-//   if (req.headers['x-forwarded-proto'] !== 'https') {
-//     return res.redirect('https://' + req.headers.host + req.url);
-//   }
-//   next();
-// });
+app.use((req, res, next) => {
+  if (req.headers["x-forwarded-proto"] !== "https") {
+    return res.redirect("https://" + req.headers.host + req.url);
+  }
+  next();
+});
 
 // Sirve archivos estáticos
 app.use(express.static("public"));
@@ -347,11 +347,14 @@ io.on("connection", (socket) => {
       }
     });
 
-// Verificar si se han jugado todas las cartas necesarias para la ronda actual
+    // Verificar si se han jugado todas las cartas necesarias para la ronda actual
     const numJugadores = partida.numJugadores;
     const rondaActual = partida.estadoJuego.ronda;
     const cartasRequeridas = numJugadores * rondaActual;
-    if (partida.estadoJuego.cartasJugadas.length === cartasRequeridas || todosSinCartas === true) {
+    if (
+      partida.estadoJuego.cartasJugadas.length === cartasRequeridas ||
+      todosSinCartas === true
+    ) {
       // Si se han jugado todas las cartas, permitir la siguiente ronda
       partida.estadoJuego.siguienteRonda = true;
 
@@ -445,18 +448,27 @@ io.on("connection", (socket) => {
     // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
     repartirCartas(nombrePartida, partida.estadoJuego.ronda);
 
-
     //Dar recompensas por pasar de ronda
     ronda = partida.estadoJuego.ronda;
 
-    if(ronda === 2) {partida.estadoJuego.estrellas += 1};
-    if(ronda === 3) {partida.estadoJuego.vidas = Number(partida.estadoJuego.vidas) + 1;}
-    if(ronda === 5) {partida.estadoJuego.estrellas += 1};
-    if(ronda === 6) {partida.estadoJuego.vidas = Number(partida.estadoJuego.vidas) + 1;}
-    if(ronda === 8) {partida.estadoJuego.estrellas += 1};
-    if(ronda === 9) {partida.estadoJuego.vidas = Number(partida.estadoJuego.vidas) + 1;}
-    
-
+    if (ronda === 2) {
+      partida.estadoJuego.estrellas += 1;
+    }
+    if (ronda === 3) {
+      partida.estadoJuego.vidas = Number(partida.estadoJuego.vidas) + 1;
+    }
+    if (ronda === 5) {
+      partida.estadoJuego.estrellas += 1;
+    }
+    if (ronda === 6) {
+      partida.estadoJuego.vidas = Number(partida.estadoJuego.vidas) + 1;
+    }
+    if (ronda === 8) {
+      partida.estadoJuego.estrellas += 1;
+    }
+    if (ronda === 9) {
+      partida.estadoJuego.vidas = Number(partida.estadoJuego.vidas) + 1;
+    }
 
     // Emitir el estado de la partida, incluyendo la ronda actual
     io.to(nombrePartida).emit("estadoPartida", {
@@ -600,7 +612,7 @@ io.on("connection", (socket) => {
           vidas: partida.estadoJuego.vidas,
           estrellas: partida.estadoJuego.estrellas,
         });
-  
+
         io.to(nombrePartida).emit("rondaSuperada", {
           mensaje: `Avanzad a la siguiente ronda.`,
         });
