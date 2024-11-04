@@ -52,7 +52,7 @@ io.on("connection", (socket) => {
           cartasJugadas: [],
           siguienteRonda: false,
           reiniciarRonda: false,
-          vidas: 10,
+          vidas: numJugadores,
           estrellas: 1,
         },
         createdAt: new Date(),
