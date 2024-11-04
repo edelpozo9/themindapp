@@ -7,13 +7,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Redirige todas las peticiones a HTTPS
-app.use((req, res, next) => {
-  if (req.headers['x-forwarded-proto'] !== 'https') {
-    return res.redirect('https://' + req.headers.host + req.url);
-  }
-  next();
-});
+// // Redirige todas las peticiones a HTTPS
+// app.use((req, res, next) => {
+//   if (req.headers['x-forwarded-proto'] !== 'https') {
+//     return res.redirect('https://' + req.headers.host + req.url);
+//   }
+//   next();
+// });
 
 // Sirve archivos estáticos
 app.use(express.static("public"));
@@ -52,7 +52,8 @@ io.on("connection", (socket) => {
           cartasJugadas: [],
           siguienteRonda: false,
           reiniciarRonda: false,
-          vidas: 3,
+          vidas: numJugadores,
+          estrellas: 1,
         },
         createdAt: new Date(),
       };
@@ -116,6 +117,7 @@ io.on("connection", (socket) => {
           siguienteRonda: partida.estadoJuego.siguienteRonda,
           reiniciarRonda: partida.estadoJuego.reiniciarRonda,
           vidas: partida.estadoJuego.vidas,
+          estrellas: partida.estadoJuego.estrellas,
         });
         // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
         io.to(nombrePartida).emit(
@@ -164,6 +166,7 @@ io.on("connection", (socket) => {
             siguienteRonda: partida.estadoJuego.siguienteRonda,
             reiniciarRonda: partida.estadoJuego.reiniciarRonda,
             vidas: partida.estadoJuego.vidas,
+            estrellas: partida.estadoJuego.estrellas,
           });
           // Emitir el estado actualizado de 'cartasJugadas' a todos los jugadores de la partida
           io.to(nombrePartida).emit(
@@ -273,7 +276,8 @@ io.on("connection", (socket) => {
         siguienteRonda: partida.estadoJuego.siguienteRonda,
         reiniciarRonda: partida.estadoJuego.reiniciarRonda,
         vidas: partida.estadoJuego.vidas,
-      });      
+        estrellas: partida.estadoJuego.estrellas,
+      });
 
       // Emitir la lista actualizada de jugadores y el nombre de la partida
       const jugadores = Object.values(partida.jugadores).map((jugador) => ({
@@ -295,7 +299,6 @@ io.on("connection", (socket) => {
           mensaje: `La carta ${cartaJugada} jugada por ${jugador.nombreUsuario} ha sido jugada en orden incorrecto.
       No os quedan vida. Fin de la Partida`,
         });
-        
       } else {
         // Emitir un error a todos los jugadores si la carta no es válida
         io.to(nombrePartida).emit("errorJugarCarta", {
@@ -330,11 +333,25 @@ io.on("connection", (socket) => {
       partida.estadoJuego.cartasJugadas
     );
 
-    // Verificar si se han jugado todas las cartas necesarias para la ronda actual
+    // Verificar los jugadores están sin cartas
+
+    let todosSinCartas = true; // Variable para verificar si todos se quedan sin cartas
+    const jugadores = Object.values(partida.jugadores);
+
+    jugadores.forEach((jugador) => {
+      if (jugador.cartasDelJugador && jugador.cartasDelJugador.length > 0) {
+        // Si el jugador aún tiene cartas, cambiamos la variable a false
+        if (jugador.cartasDelJugador.length > 0) {
+          todosSinCartas = false;
+        }
+      }
+    });
+
+// Verificar si se han jugado todas las cartas necesarias para la ronda actual
     const numJugadores = partida.numJugadores;
     const rondaActual = partida.estadoJuego.ronda;
     const cartasRequeridas = numJugadores * rondaActual;
-    if (partida.estadoJuego.cartasJugadas.length === cartasRequeridas) {
+    if (partida.estadoJuego.cartasJugadas.length === cartasRequeridas || todosSinCartas === true) {
       // Si se han jugado todas las cartas, permitir la siguiente ronda
       partida.estadoJuego.siguienteRonda = true;
 
@@ -345,6 +362,7 @@ io.on("connection", (socket) => {
         siguienteRonda: partida.estadoJuego.siguienteRonda,
         reiniciarRonda: partida.estadoJuego.reiniciarRonda,
         vidas: partida.estadoJuego.vidas,
+        estrellas: partida.estadoJuego.estrellas,
       });
 
       io.to(nombrePartida).emit("rondaSuperada", {
@@ -366,7 +384,8 @@ io.on("connection", (socket) => {
     }
 
     partida.estadoJuego.ronda = 1; // Establecer la ronda en uno
-    partida.estadoJuego.vidas = 3;
+    partida.estadoJuego.vidas = partida.numJugadores;
+    partida.estadoJuego.estrellas = 1; // Establecer la ronda en uno
     partida.estadoJuego.siguienteRonda = false;
     partida.estadoJuego.reiniciarRonda = false;
     // Eliminar todas las cartas jugadas antes de iniciar la nueva ronda
@@ -380,7 +399,7 @@ io.on("connection", (socket) => {
       "actualizarCartasJugadas",
       partida.estadoJuego.cartasJugadas
     );
-    
+
     // Emitir la lista actualizada de jugadores y el nombre de la partida
     const jugadores = Object.values(partida.jugadores).map((jugador) => ({
       userId: jugador.userId,
@@ -401,6 +420,7 @@ io.on("connection", (socket) => {
       siguienteRonda: partida.estadoJuego.siguienteRonda,
       reiniciarRonda: partida.estadoJuego.reiniciarRonda,
       vidas: partida.estadoJuego.vidas,
+      estrellas: partida.estadoJuego.estrellas,
     });
   });
 
@@ -425,6 +445,19 @@ io.on("connection", (socket) => {
     // Llamar a la función repartirCartas con el nombre de la partida y la ronda actual
     repartirCartas(nombrePartida, partida.estadoJuego.ronda);
 
+
+    //Dar recompensas por pasar de ronda
+    ronda = partida.estadoJuego.ronda;
+
+    if(ronda === 2) {partida.estadoJuego.estrellas += 1};
+    if(ronda === 3) {partida.estadoJuego.vidas = Number(partida.estadoJuego.vidas) + 1;}
+    if(ronda === 5) {partida.estadoJuego.estrellas += 1};
+    if(ronda === 6) {partida.estadoJuego.vidas = Number(partida.estadoJuego.vidas) + 1;}
+    if(ronda === 8) {partida.estadoJuego.estrellas += 1};
+    if(ronda === 9) {partida.estadoJuego.vidas = Number(partida.estadoJuego.vidas) + 1;}
+    
+
+
     // Emitir el estado de la partida, incluyendo la ronda actual
     io.to(nombrePartida).emit("estadoPartida", {
       nombrePartida: nombrePartida,
@@ -432,6 +465,7 @@ io.on("connection", (socket) => {
       siguienteRonda: partida.estadoJuego.siguienteRonda,
       reiniciarRonda: partida.estadoJuego.reiniciarRonda,
       vidas: partida.estadoJuego.vidas,
+      estrellas: partida.estadoJuego.estrellas,
     });
   });
 
@@ -474,6 +508,7 @@ io.on("connection", (socket) => {
       siguienteRonda: partida.estadoJuego.siguienteRonda,
       reiniciarRonda: partida.estadoJuego.reiniciarRonda,
       vidas: partida.estadoJuego.vidas,
+      estrellas: partida.estadoJuego.estrellas,
     });
   });
 
@@ -515,6 +550,74 @@ io.on("connection", (socket) => {
     });
   }
 
+  socket.on("jugarEstrella", ({ nombrePartida }) => {
+    const partida = partidas[nombrePartida]; // Obtén la partida actual, ajusta según tu lógica
+
+    if (partida && partida.estadoJuego.estrellas > 0) {
+      partida.estadoJuego.estrellas -= 1;
+
+      console.log(`aaaaaaaaa rta $`);
+      // Iterar sobre cada jugador para eliminar la carta más baja
+      let todosSinCartas = true; // Variable para verificar si todos se quedan sin cartas
+      const jugadores = Object.values(partida.jugadores);
+
+      jugadores.forEach((jugador) => {
+        console.log(`bbbbbb rta $`);
+        if (jugador.cartasDelJugador && jugador.cartasDelJugador.length > 0) {
+          // Encontrar la carta más baja del jugador
+          const cartaBaja = Math.min(...jugador.cartasDelJugador);
+          // Eliminar la carta más baja
+          jugador.cartasDelJugador = jugador.cartasDelJugador.filter(
+            (carta) => carta !== cartaBaja
+          );
+          console.log(
+            `Se ha eliminado la carta ${cartaBaja} de ${jugador.nombreUsuario}`
+          );
+
+          // Si el jugador aún tiene cartas, cambiamos la variable a false
+          if (jugador.cartasDelJugador.length > 0) {
+            todosSinCartas = false;
+          }
+          // Emitir las cartas que ya tiene el jugador
+          const cartasJugador = jugador.cartasDelJugador;
+          io.to(jugador.userId).emit("asignarCartas", cartasJugador);
+        }
+      });
+
+      // Comprobar si todos los jugadores se quedan sin cartas
+      if (todosSinCartas) {
+        // También podrías querer reiniciar otras propiedades aquí si es necesario
+        // Por ejemplo, repartir nuevas cartas
+        // Emitir el estado actualizado de la partida a todos los clientes
+        partida.estadoJuego.siguienteRonda = true;
+
+        // Emitir el estado de la partida actualizado a todos los jugadores
+        io.to(nombrePartida).emit("estadoPartida", {
+          nombrePartida: nombrePartida,
+          rondaActual: partida.estadoJuego.rondaActual,
+          siguienteRonda: partida.estadoJuego.siguienteRonda,
+          reiniciarRonda: partida.estadoJuego.reiniciarRonda,
+          vidas: partida.estadoJuego.vidas,
+          estrellas: partida.estadoJuego.estrellas,
+        });
+  
+        io.to(nombrePartida).emit("rondaSuperada", {
+          mensaje: `Avanzad a la siguiente ronda.`,
+        });
+      }
+
+      // Emitir el estado actualizado de la partida a todos los clientes
+      io.to(nombrePartida).emit("estadoPartida", {
+        nombrePartida: nombrePartida,
+        rondaActual: partida.estadoJuego.ronda,
+        siguienteRonda: partida.estadoJuego.siguienteRonda,
+        reiniciarRonda: partida.estadoJuego.reiniciarRonda,
+        vidas: partida.estadoJuego.vidas,
+        estrellas: partida.estadoJuego.estrellas,
+      });
+    }
+  });
+
   // Manejar el evento de dejar la partida
   socket.on("dejarPartida", (nombrePartida) => {
     manejarDesconexion(userId, "Usuario dejó la partida"); // Llama a la función de desconexión
@@ -551,6 +654,7 @@ io.on("connection", (socket) => {
             siguienteRonda: false, // Esto puede depender de tu lógica específica
             reiniciarRonda: true,
             vidas: partida.estadoJuego.vidas,
+            estrellas: partida.estadoJuego.estrellas,
           });
         }
 
