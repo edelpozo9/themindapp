@@ -116,9 +116,12 @@
             <div class="col-md-8 position-relative">
                 <div class="partida-zone border rounded p-3">
                     <h2 class="mb-3" id="zonaRondaPartida">Partida</h2>
-                    <!-- Contador de vidas en la esquina superior derecha -->
-                    <div id="contadorVidas"></div>
-                    <!-- Aquí se desarrollará la partida -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <!-- Contador de vidas en la esquina superior derecha -->
+                        <div id="contadorVidas" class="d-flex"></div>
+                        <!-- Contador de estrellas ninja a la derecha del contador de vidas -->
+                        <div id="contadorEstrellas" class="d-flex" style="cursor: pointer;"></div>
+                    </div>
                     <div id="zonaPartida" class="border rounded p-3">
                         <p id="noCartasMsg"></p>
                     </div>
@@ -216,7 +219,6 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             const savedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Idioma por defecto
-            console.log("1:->", savedLanguage);
             // Cargar el encabezado desde header.html
             fetch("header.html")
                 .then((response) => response.text())
@@ -229,14 +231,12 @@
 
             // Traducir el contenido principal de la página
             translateRoomPage(savedLanguage);
-            console.log("2:->", savedLanguage);
 
             // Configurar los eventos para cambiar el idioma
             document.querySelectorAll('.language-selector').forEach(button => {
                 button.addEventListener('click', function () {
                     const language = this.getAttribute('data-language');
                     changeLanguage(language);
-                    console.log("pulsar:->", savedLanguage);
                 });
             });
         });
@@ -256,7 +256,6 @@
 
             // Comprobar si hay un idioma guardado en localStorage
             const savedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Default to Spanish
-            console.log("3:->", savedLanguage);
             // Cambiar el idioma a lo guardado en localStorage
             changeLanguage(savedLanguage);
         };
@@ -327,13 +326,16 @@
         });
 
         // Escuchar el evento de estado de la partida
-        socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, siguienteRonda, reiniciarRonda, vidas }) => {
+        socket.on('estadoPartida', ({ nombrePartida: nombrePartidaSocket, rondaActual, siguienteRonda, reiniciarRonda, vidas, estrellas }) => {
             const btnIniciarPartida = document.getElementById('btnIniciarPartida');
             const btnIniciarRonda = document.getElementById('btnIniciarRonda');
             const btnReiniciarRonda = document.getElementById('btnReiniciarRonda');
             const selectedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Idioma por defecto
+            const contadorEstrellas = document.getElementById('contadorEstrellas');
+            contadorEstrellas.style.pointerEvents = 'none'; // Desactiva el clic inicialmente
 
             actualizarContadorVidas(vidas);
+            actualizarEstrellasNinja(estrellas);
 
             if (vidas === 0) {
                 // Mostrar Iniciar Partida
@@ -349,7 +351,7 @@
                 btnReiniciarRonda.disabled = true;
                 btnIniciarPartida.style.display = 'none';
                 btnIniciarRonda.style.display = 'none';
-            } else if (rondaActual === 0 ) {
+            } else if (rondaActual === 0) {
                 // La partida aún no ha comenzado: Mostrar Iniciar Partida
                 btnIniciarPartida.style.display = 'inline-block';
                 btnIniciarRonda.style.display = 'none';
@@ -363,11 +365,16 @@
                 // La partida ha comenzado
                 btnIniciarPartida.style.display = 'none';
                 btnIniciarRonda.style.display = 'inline-block';
-                btnIniciarRonda.disabled = !siguienteRonda;
-
+                btnIniciarRonda.disabled = !siguienteRonda;               
                 btnReiniciarRonda.style.display = 'none';
                 btnReiniciarRonda.disabled = true;
                 document.getElementById('zonaRondaPartida').innerText = `${translations[selectedLanguage].ronda}: ${rondaActual}`;
+
+                contadorEstrellas.style.pointerEvents = 'auto'; // Activa el clic al inicio de la partida
+                //Si la ronda ha acabado desactiva las estrellas
+                if(siguienteRonda){
+                    contadorEstrellas.style.pointerEvents = 'none'; // Desactiva el clic inicialmente 
+                }
 
             }
         }
@@ -519,6 +526,12 @@
             errorModal.show();
         });
 
+        // Seleccionar el contador de estrellas y agregar un evento de clic
+        document.getElementById('contadorEstrellas').addEventListener('click', () => {
+            // Emitir evento al servidor para reducir una estrella
+            socket.emit('jugarEstrella', { nombrePartida });
+        });
+
         function actualizarContadorVidas(vidas) {
             const contadorVidas = document.getElementById('contadorVidas');
             contadorVidas.innerHTML = ''; // Limpiar el contenido previo
@@ -532,6 +545,24 @@
                 img.style.width = '24px'; // Ajustar tamaño según necesites
                 img.style.height = '24px'; // Ajustar tamaño según necesites
                 contadorVidas.appendChild(img); // Añadir el icono al contenedor
+            }
+        }
+
+        function actualizarEstrellasNinja(estrellasNinja) {
+            const contadorEstrellasNinja = document.getElementById('contadorEstrellas');
+            contadorEstrellasNinja.innerHTML = ''; // Limpiar el contenido previo
+
+            // Añadir los iconos de vida según la cantidad de vidas
+            for (let i = 0; i < estrellasNinja; i++) {
+                const img = document.createElement('img');
+                img.src = 'estrella.png'; // Ruta del icono de vida
+                img.alt = 'Estrella';
+                img.className = 'estrella-icon'; // Puedes aplicar estilos específicos si lo deseas
+                img.style.width = '32px'; // Ajustar tamaño según necesites
+                img.style.height = '32px'; // Ajustar tamaño según necesites
+
+                contadorEstrellasNinja.appendChild(img); // Añadir el icono al contenedor
+                
             }
         }
 
@@ -602,7 +633,8 @@
                 toggleListaJugadores: "Lista de Jugadores",
                 copyright: "&copy; 2024 The Mind. Proyecto sin ánimo de lucro.",
                 partidaNoIniciada: "Partida no iniciada",
-                ronda: "Ronda", partida: "Partida",
+                ronda: "Ronda",
+                partida: "Partida",
                 jugadoresConectados: "Jugadores conectados",
                 ordenInc: '¡Orden incorrecto!',
                 rondaSup: '¡Ronda Superada!',
