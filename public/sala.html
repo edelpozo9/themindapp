@@ -525,6 +525,20 @@
             const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
             errorModal.show();
         });
+
+        socket.on("cartaEliminada", ({ mensaje }) => {
+            const selectedLanguage = localStorage.getItem('selectedLanguage') || 'es'; // Idioma por defecto
+
+
+            const errorMessage = `${translations[selectedLanguage].cartaEliminada} ${mensaje} `;
+
+            // Establecer el mensaje en el cuerpo del modal
+            document.getElementById('errorModalMessage').innerText = errorMessage;
+            document.getElementById('errorModalLabel').innerText = translations[selectedLanguage].estrellaNinja;
+            // Mostrar el modal de error
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        });
   
         // Seleccionar el contador de estrellas y agregar un evento de clic
         document.getElementById('contadorEstrellas').addEventListener('click', () => {
@@ -608,7 +622,9 @@
                 jugadaPor: ' played by ',
                 msgOrdenIncorrecto: 'has been played in the wrong order. Please try again.',
                 msgOrdenIncorrectoFinPartida: 'has been played in the wrong order. You have no life left. Game Over.',
-                vidasCont: 'Lifes'
+                vidasCont: 'Lifes',
+                cartaEliminada: 'The card that has been removed is: ',
+                estrellaNinja: 'Ninja star'
             },
             es: {
                 roomTitle: "Sala de Juego",
@@ -645,7 +661,9 @@
                 jugadaPor: ' jugada por ',
                 msgOrdenIncorrecto: 'ha sido jugada en orden incorrecto. Volved a intentarlo.',
                 msgOrdenIncorrectoFinPartida: 'ha sido jugada en orden incorrecto. No os quedan vida. Fin de la Partida.',
-                vidasCont: 'Vidas'
+                vidasCont: 'Vidas',
+                cartaEliminada: 'Se ha descartado la carta: ',
+                estrellaNinja: 'Estrella ninja'
             }
         };
 
