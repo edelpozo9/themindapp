@@ -7,13 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// // Redirige todas las peticiones a HTTPS
-app.use((req, res, next) => {
-  if (req.headers["x-forwarded-proto"] !== "https") {
-    return res.redirect("https://" + req.headers.host + req.url);
-  }
-  next();
-});
+
 
 // Sirve archivos estáticos
 app.use(express.static("public"));
@@ -568,13 +562,11 @@ io.on("connection", (socket) => {
     if (partida && partida.estadoJuego.estrellas > 0) {
       partida.estadoJuego.estrellas -= 1;
 
-      console.log(`aaaaaaaaa rta $`);
       // Iterar sobre cada jugador para eliminar la carta más baja
       let todosSinCartas = true; // Variable para verificar si todos se quedan sin cartas
       const jugadores = Object.values(partida.jugadores);
 
       jugadores.forEach((jugador) => {
-        console.log(`bbbbbb rta $`);
         if (jugador.cartasDelJugador && jugador.cartasDelJugador.length > 0) {
           // Encontrar la carta más baja del jugador
           const cartaBaja = Math.min(...jugador.cartasDelJugador);
@@ -585,6 +577,10 @@ io.on("connection", (socket) => {
           console.log(
             `Se ha eliminado la carta ${cartaBaja} de ${jugador.nombreUsuario}`
           );
+
+          io.to(jugador.userId).emit("cartaEliminada", {
+            mensaje: `${cartaBaja}`,
+          });
 
           // Si el jugador aún tiene cartas, cambiamos la variable a false
           if (jugador.cartasDelJugador.length > 0) {
