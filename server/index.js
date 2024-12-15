@@ -580,9 +580,6 @@ io.on("connection", (socket) => {
           jugador.cartasDelJugador = jugador.cartasDelJugador.filter(
             (carta) => carta !== cartaBaja
           );
-          console.log(
-            `Se ha eliminado la carta ${cartaBaja} de ${jugador.nombreUsuario}`
-          );
 
           io.to(jugador.userId).emit("cartaEliminada", {
             mensaje: `${cartaBaja}`,
